@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.krinotech.bakingapp.R;
+import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
 import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.recyclerview.RecipeAdapter;
 
@@ -24,6 +24,8 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class RecipesFragment extends Fragment {
+    public static final String TAG = RecipesFragment.class.getSimpleName();
+
     private RecyclerView recyclerView;
     private RecipeAdapter recipeAdapter;
 
@@ -41,6 +43,8 @@ public class RecipesFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.rv_recipe);
 
         initRecyclerView(rootView.getContext());
+
+        new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());
 
         return rootView;
     }

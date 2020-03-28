@@ -9,10 +9,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.krinotech.bakingapp.fragment.RecipesFragment;
+import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
 import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.network.BakingApi;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         Call<List<Recipe>> recipes = bakingApi.listRecipes();
+
+        new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());
 
         fetchRecipes(recipes, recipesFragment);
     }
