@@ -1,4 +1,4 @@
-package com.krinotech.bakingapp.fragment;
+package com.krinotech.bakingapp.view.fragment;
 
 
 import android.content.Context;

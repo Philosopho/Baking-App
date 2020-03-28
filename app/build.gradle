@@ -68,7 +68,7 @@ dependencies {
     // Saved state module for ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
 
-    // Annotation processor
+    // Annotation processor for java8
     annotationProcessor "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
 }

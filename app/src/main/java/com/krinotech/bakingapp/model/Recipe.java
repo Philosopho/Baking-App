@@ -1,8 +1,14 @@
 package com.krinotech.bakingapp.model;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "recipe")
 public class Recipe {
 
+    @PrimaryKey(autoGenerate = true)
     private int id;
+
     private String name;
 
     public Recipe(int id, String name) {
