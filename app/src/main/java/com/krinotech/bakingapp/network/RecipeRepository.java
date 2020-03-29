@@ -14,17 +14,14 @@ import com.krinotech.bakingapp.model.Recipe;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.krinotech.bakingapp.view.fragment.RecipesFragment.TAG;
 
 public class RecipeRepository {
     public static final String BAKING_API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
-
+    public static final String TAG = RecipeRepository.class.getSimpleName();
     private static final Object LOCK = new Object();
     private static RecipeRepository instance;
 
@@ -62,9 +59,9 @@ public class RecipeRepository {
 
     private void refreshRecipes() {
         AppThreadExecutor.getInstance().diskIO().execute(() -> {
-            boolean recipesExist = preferences.shouldFetchNewRecipes();
+            boolean shouldFetchNewRecipes = preferences.shouldFetchNewRecipes();
 
-            if(!recipesExist) {
+            if(shouldFetchNewRecipes) {
                 Log.d(TAG, "refreshRecipes");
                 try {
                     Response<List<Recipe>> response = bakingApi.listRecipes().execute();

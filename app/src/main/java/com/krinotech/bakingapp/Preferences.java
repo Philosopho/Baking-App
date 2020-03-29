@@ -2,6 +2,7 @@ package com.krinotech.bakingapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class Preferences {
     private SharedPreferences sharedPreferences;
@@ -15,11 +16,11 @@ public class Preferences {
     public boolean shouldFetchNewRecipes() {
         boolean shouldFetch = false;
         long now = System.currentTimeMillis();
-
         if(sharedPreferences.contains(RECIPE_NETWORK_RATE_LIMITER)) {
             long lastAcquired = sharedPreferences.getLong(RECIPE_NETWORK_RATE_LIMITER, System.currentTimeMillis());
-            if(lastAcquired + (24 * 60 * 60 * 1000) < now){
+            if((lastAcquired + (24 * 60 * 60 * 1000)) < now){
                 shouldFetch = true;
+                sharedPreferences.edit().putLong(RECIPE_NETWORK_RATE_LIMITER, now).apply();
             }
         }
         else {
