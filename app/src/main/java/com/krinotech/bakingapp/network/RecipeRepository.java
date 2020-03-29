@@ -2,6 +2,7 @@ package com.krinotech.bakingapp.network;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -10,9 +11,14 @@ import com.krinotech.bakingapp.AppThreadExecutor;
 import com.krinotech.bakingapp.Preferences;
 import com.krinotech.bakingapp.database.RecipeDao;
 import com.krinotech.bakingapp.database.RecipeDatabase;
+import com.krinotech.bakingapp.model.Ingredient;
 import com.krinotech.bakingapp.model.Recipe;
+import com.krinotech.bakingapp.model.RecipeWithIngredients;
+import com.krinotech.bakingapp.model.RecipeWithSteps;
+import com.krinotech.bakingapp.model.Step;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -35,21 +41,25 @@ public class RecipeRepository {
 
     private Preferences preferences;
 
-    private RecipeRepository(Context applicationContext) {
-        recipeDao = RecipeDatabase.getInstance(applicationContext).recipeDao();
-        preferences = new Preferences(applicationContext);
+    private AppThreadExecutor executor;
+
+    private RecipeRepository(RecipeDao recipeDao, Preferences preferences, AppThreadExecutor executor) {
+        this.recipeDao = recipeDao;
+        this.preferences = preferences;
+        this.executor = executor;
     }
 
 
-    public static RecipeRepository getInstance(Context applicationContext) {
+    public static RecipeRepository getInstance(RecipeDao recipeDao, Preferences preferences, AppThreadExecutor executor) {
         if(instance == null) {
             synchronized (LOCK) {
                 Log.d(TAG, "getInstance Repository");
-                instance = new RecipeRepository(applicationContext);
+                instance = new RecipeRepository(recipeDao, preferences, executor);
             }
         }
         return instance;
     }
+
 
     public LiveData<List<Recipe>> getRecipes() {
         refreshRecipes();
@@ -57,22 +67,44 @@ public class RecipeRepository {
         return recipeDao.loadRecipes();
     }
 
+    public LiveData<List<RecipeWithIngredients>> getRecipeWithIngredients() {
+        return recipeDao.loadRecipeWithIngredients();
+    }
+
+    public LiveData<List<RecipeWithSteps>> getRecipeWithSteps() {
+        return recipeDao.loadRecipeWithSteps();
+    }
+
     private void refreshRecipes() {
-        AppThreadExecutor.getInstance().diskIO().execute(() -> {
+       executor.diskIO().execute(() -> {
             boolean shouldFetchNewRecipes = preferences.shouldFetchNewRecipes();
 
             if(shouldFetchNewRecipes) {
                 Log.d(TAG, "refreshRecipes");
                 try {
                     Response<List<Recipe>> response = bakingApi.listRecipes().execute();
+
                     if(response.isSuccessful()) {
                         Log.d(TAG, "successful response");
-                        recipeDao.insertRecipes(response.body());
+
+                        List<Recipe> recipes = response.body();
+                        List<Ingredient> ingredients = new ArrayList<>();
+                        List<Step> steps = new ArrayList<>();
+
+                        if(recipes != null) {
+                            for(Recipe recipe: recipes) {
+                                recipe.setRecipeIdToChildren();
+                                ingredients.addAll(recipe.getIngredients());
+                                steps.addAll(recipe.getSteps());
+                            }
+                            recipeDao.insertRecipes(response.body());
+                            recipeDao.insertIngredients(ingredients);
+                            recipeDao.insertSteps(steps);
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         });
     }

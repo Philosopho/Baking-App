@@ -6,16 +6,23 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.krinotech.bakingapp.R;
+import com.krinotech.bakingapp.model.Ingredient;
+import com.krinotech.bakingapp.model.RecipeWithIngredients;
+import com.krinotech.bakingapp.model.RecipeWithSteps;
+import com.krinotech.bakingapp.util.InjectorUtils;
 import com.krinotech.bakingapp.view.fragment.RecipesFragment;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
 import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.network.BakingApi;
 import com.krinotech.bakingapp.viewmodel.MainViewModel;
+import com.krinotech.bakingapp.viewmodel.MainViewModelFactory;
 
 import java.util.List;
 
@@ -50,10 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
         new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());
 
-        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        MainViewModelFactory mainViewModelFactory = InjectorUtils.provideMainActivityViewModelFactory(getApplicationContext());
+        mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(MainViewModel.class);
 
         showProgressBar();
-
         mainViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(List<Recipe> recipes) {

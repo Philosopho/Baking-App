@@ -1,25 +1,19 @@
 package com.krinotech.bakingapp.viewmodel;
 
-import android.app.Application;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.network.RecipeRepository;
 
 import java.util.List;
 
-public class MainViewModel extends AndroidViewModel {
+public class MainViewModel extends ViewModel {
 
     private LiveData<List<Recipe>> recipes;
 
-    public MainViewModel(@NonNull Application application) {
-        super(application);
-        recipes = RecipeRepository
-                .getInstance(application.getApplicationContext())
-                .getRecipes();
+    public MainViewModel(RecipeRepository recipeRepository) {
+        recipes = recipeRepository.getRecipes();
     }
 
     public LiveData<List<Recipe>> getRecipes() {

@@ -25,6 +25,7 @@ public class Preferences {
         }
         else {
             sharedPreferences.edit().putLong(RECIPE_NETWORK_RATE_LIMITER, now).apply();
+            shouldFetch = true;
         }
         return shouldFetch;
     }

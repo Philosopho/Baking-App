@@ -6,9 +6,11 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.krinotech.bakingapp.model.Ingredient;
 import com.krinotech.bakingapp.model.Recipe;
+import com.krinotech.bakingapp.model.Step;
 
-@Database(entities = {Recipe.class}, version = 1, exportSchema = false)
+@Database(entities = {Recipe.class, Ingredient.class, Step.class}, version = 11, exportSchema = false)
 public abstract class RecipeDatabase extends RoomDatabase {
     private static RecipeDatabase instance;
     private static final Object LOCK = new Object();
@@ -20,6 +22,7 @@ public abstract class RecipeDatabase extends RoomDatabase {
                 instance = Room.databaseBuilder(
                         context.getApplicationContext(),
                         RecipeDatabase.class, DATABASE_NAME)
+                        .fallbackToDestructiveMigration()
                         .build();
             }
         }
