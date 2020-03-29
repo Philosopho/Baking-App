@@ -6,15 +6,18 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.krinotech.bakingapp.R;
+import com.krinotech.bakingapp.model.RecipeAllIngredients;
 import com.krinotech.bakingapp.view.fragment.RecipesFragment;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
 import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.network.BakingApi;
+import com.krinotech.bakingapp.viewmodel.IngredientsViewModel;
 import com.krinotech.bakingapp.viewmodel.MainViewModel;
 
 import java.util.List;
@@ -66,6 +69,22 @@ public class MainActivity extends AppCompatActivity {
                     showProgressBar();
                 }
 
+            }
+        });
+
+        IngredientsViewModel ingredientsViewModel = ViewModelProviders.of(this).get(IngredientsViewModel.class);
+
+        showProgressBar();
+        ingredientsViewModel.getIngredients().observe(this, new Observer<List<RecipeAllIngredients>>() {
+            @Override
+            public void onChanged(List<RecipeAllIngredients> recipeAllIngredients) {
+                if(recipeAllIngredients != null && !recipeAllIngredients.isEmpty()) {
+                    Log.d(TAG, recipeAllIngredients.toString());
+                    hideProgressBar();
+                }
+                else {
+                    showProgressBar();
+                }
             }
         });
     }

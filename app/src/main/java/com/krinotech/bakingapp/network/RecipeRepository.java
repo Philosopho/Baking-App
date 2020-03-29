@@ -11,6 +11,7 @@ import com.krinotech.bakingapp.Preferences;
 import com.krinotech.bakingapp.database.RecipeDao;
 import com.krinotech.bakingapp.database.RecipeDatabase;
 import com.krinotech.bakingapp.model.Recipe;
+import com.krinotech.bakingapp.model.RecipeAllIngredients;
 
 import java.io.IOException;
 import java.util.List;
@@ -55,6 +56,12 @@ public class RecipeRepository {
         refreshRecipes();
 
         return recipeDao.loadRecipes();
+    }
+
+    public LiveData<List<RecipeAllIngredients>> getIngredients() {
+        refreshRecipes();
+
+        return recipeDao.getRecipeWithIngredients();
     }
 
     private void refreshRecipes() {
