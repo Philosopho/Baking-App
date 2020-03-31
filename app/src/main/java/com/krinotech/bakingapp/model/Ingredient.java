@@ -1,17 +1,28 @@
 package com.krinotech.bakingapp.model;
 
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "ingredient")
 public class Ingredient {
+    public static final String INGREDIENTS = "Ingredients\n\n";
+
     @PrimaryKey(autoGenerate = true)
     private long ingredientId;
 
     private double quantity;
 
+    @ForeignKey
+            (entity = Recipe.class,
+                    parentColumns = "id",
+                    childColumns = "recipeId",
+                    onDelete = CASCADE)
     private int recipeId;
+
     private String measure;
     private String ingredient;
 
@@ -63,5 +74,27 @@ public class Ingredient {
 
     public void setIngredientId(long ingredientId) {
         this.ingredientId = ingredientId;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(INGREDIENTS);
+        stringBuilder.append(ingredientId);
+        stringBuilder.append(". ");
+        stringBuilder.append(quantity);
+        stringBuilder.append(" ");
+        stringBuilder.append(measure.toLowerCase());
+        if((int) quantity > 1 ){
+            stringBuilder.append("s ");
+        }
+        else {
+            stringBuilder.append(" ");
+        }
+        stringBuilder.append("of ");
+        stringBuilder.append(ingredient);
+        stringBuilder.append(".");
+
+        return stringBuilder.toString();
     }
 }

@@ -10,7 +10,7 @@ import com.krinotech.bakingapp.model.Ingredient;
 import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.model.Step;
 
-@Database(entities = {Recipe.class, Ingredient.class, Step.class}, version = 11, exportSchema = false)
+@Database(entities = {Recipe.class, Ingredient.class, Step.class}, version = 16, exportSchema = false)
 public abstract class RecipeDatabase extends RoomDatabase {
     private static RecipeDatabase instance;
     private static final Object LOCK = new Object();

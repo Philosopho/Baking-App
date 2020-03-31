@@ -1,15 +1,23 @@
 package com.krinotech.bakingapp.model;
 
 import androidx.room.Entity;
-import androidx.room.Ignore;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "steps")
 public class Step {
     @PrimaryKey(autoGenerate = true)
     private long stepId;
 
+    @ForeignKey
+            (entity = Recipe.class,
+                    parentColumns = "id",
+                    childColumns = "recipeId",
+                    onDelete = CASCADE)
     private int recipeId;
+
     private String shortDescription;
 
     private String description;

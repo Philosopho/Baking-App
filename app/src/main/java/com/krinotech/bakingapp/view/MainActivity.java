@@ -1,41 +1,34 @@
 package com.krinotech.bakingapp.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.krinotech.bakingapp.R;
-import com.krinotech.bakingapp.model.Ingredient;
-import com.krinotech.bakingapp.model.RecipeWithIngredients;
-import com.krinotech.bakingapp.model.RecipeWithSteps;
+import com.krinotech.bakingapp.model.Recipe;
+import com.krinotech.bakingapp.model.RecipeDetails;
+import com.krinotech.bakingapp.recyclerview.RecipeAdapter;
 import com.krinotech.bakingapp.util.InjectorUtils;
+import com.krinotech.bakingapp.view.fragment.RecipeDetailsFragment;
 import com.krinotech.bakingapp.view.fragment.RecipesFragment;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
-import com.krinotech.bakingapp.model.Recipe;
-import com.krinotech.bakingapp.network.BakingApi;
 import com.krinotech.bakingapp.viewmodel.MainViewModel;
 import com.krinotech.bakingapp.viewmodel.MainViewModelFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnItemClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private MainViewModel mainViewModel;
     private ProgressBar progressBar;
+    private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         RecipesFragment recipesFragment = new RecipesFragment();
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
 
         fragmentManager
                 .beginTransaction()
@@ -64,15 +57,10 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(List<Recipe> recipes) {
-
-                if(recipes != null && !recipes.isEmpty()) {
+                hideProgressBar();
+                if(mainViewModel.recipesExist()) {
                     recipesFragment.setRecipes(recipes);
-                    hideProgressBar();
                 }
-                else {
-                    showProgressBar();
-                }
-
             }
         });
     }
@@ -83,6 +71,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void clickRecipe(Recipe recipe) {
+        Fragment fragment = new RecipeDetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(getString(R.string.RECIPE_ID_EXTRA), recipe.getId());
+
+        fragment.setArguments(bundle);
+
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.fl_recipes_container, fragment)
+                .commit();
+
     }
 }
 

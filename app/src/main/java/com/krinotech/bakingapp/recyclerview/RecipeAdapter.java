@@ -14,8 +14,14 @@ import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     private List<Recipe> recipes;
+    private OnItemClickListener clickListener;
 
-    public RecipeAdapter() { }
+    public interface OnItemClickListener {
+        void clickRecipe(Recipe recipe);
+    }
+    public RecipeAdapter(OnItemClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
 
     @NonNull
     @Override
@@ -29,7 +35,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = recipes.get(position);
 
-        holder.textView.setText(recipe.getName());
+        holder.bind(recipe, this.clickListener);
     }
 
     @Override

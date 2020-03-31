@@ -7,11 +7,12 @@ import com.krinotech.bakingapp.Preferences;
 import com.krinotech.bakingapp.database.RecipeDao;
 import com.krinotech.bakingapp.database.RecipeDatabase;
 import com.krinotech.bakingapp.network.RecipeRepository;
+import com.krinotech.bakingapp.viewmodel.DetailsViewModelFactory;
 import com.krinotech.bakingapp.viewmodel.MainViewModelFactory;
 
 public class InjectorUtils {
 
-    public static RecipeRepository provideRecipeRepository(Context context) {
+    private static RecipeRepository provideRecipeRepository(Context context) {
         RecipeDao recipeDao = RecipeDatabase.getInstance(context).recipeDao();
         Preferences preferences = new Preferences(context);
         AppThreadExecutor appThreadExecutor = AppThreadExecutor.getInstance();
@@ -22,5 +23,10 @@ public class InjectorUtils {
     public static MainViewModelFactory provideMainActivityViewModelFactory(Context context) {
         RecipeRepository repository = provideRecipeRepository(context.getApplicationContext());
         return new MainViewModelFactory(repository);
+    }
+
+    public static DetailsViewModelFactory provideDetailsViewModelFactory(Context context, int id) {
+        RecipeRepository repository = provideRecipeRepository(context.getApplicationContext());
+        return new DetailsViewModelFactory(repository, id);
     }
 }

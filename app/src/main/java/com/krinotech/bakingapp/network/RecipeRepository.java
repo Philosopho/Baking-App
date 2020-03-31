@@ -1,8 +1,5 @@
 package com.krinotech.bakingapp.network;
 
-import android.app.Application;
-import android.content.Context;
-import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -10,11 +7,9 @@ import androidx.lifecycle.LiveData;
 import com.krinotech.bakingapp.AppThreadExecutor;
 import com.krinotech.bakingapp.Preferences;
 import com.krinotech.bakingapp.database.RecipeDao;
-import com.krinotech.bakingapp.database.RecipeDatabase;
 import com.krinotech.bakingapp.model.Ingredient;
 import com.krinotech.bakingapp.model.Recipe;
-import com.krinotech.bakingapp.model.RecipeWithIngredients;
-import com.krinotech.bakingapp.model.RecipeWithSteps;
+import com.krinotech.bakingapp.model.RecipeDetails;
 import com.krinotech.bakingapp.model.Step;
 
 import java.io.IOException;
@@ -67,12 +62,10 @@ public class RecipeRepository {
         return recipeDao.loadRecipes();
     }
 
-    public LiveData<List<RecipeWithIngredients>> getRecipeWithIngredients() {
-        return recipeDao.loadRecipeWithIngredients();
-    }
+    public LiveData<RecipeDetails> getRecipeDetails(int id) {
+        refreshRecipes();
 
-    public LiveData<List<RecipeWithSteps>> getRecipeWithSteps() {
-        return recipeDao.loadRecipeWithSteps();
+        return recipeDao.loadRecipeDetails(id);
     }
 
     private void refreshRecipes() {

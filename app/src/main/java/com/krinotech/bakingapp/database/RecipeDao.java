@@ -9,8 +9,7 @@ import androidx.room.Transaction;
 
 import com.krinotech.bakingapp.model.Ingredient;
 import com.krinotech.bakingapp.model.Recipe;
-import com.krinotech.bakingapp.model.RecipeWithIngredients;
-import com.krinotech.bakingapp.model.RecipeWithSteps;
+import com.krinotech.bakingapp.model.RecipeDetails;
 import com.krinotech.bakingapp.model.Step;
 
 import java.util.List;
@@ -22,12 +21,8 @@ public interface RecipeDao {
     LiveData<List<Recipe>> loadRecipes();
 
     @Transaction
-    @Query("SELECT * FROM recipe")
-    LiveData<List<RecipeWithIngredients>> loadRecipeWithIngredients();
-
-    @Transaction
-    @Query("SELECT * FROM recipe")
-    LiveData<List<RecipeWithSteps>> loadRecipeWithSteps();
+    @Query("SELECT * FROM recipe where :id")
+    LiveData<RecipeDetails> loadRecipeDetails(int id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertRecipes(List<Recipe> recipes);

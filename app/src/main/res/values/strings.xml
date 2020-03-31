@@ -14,4 +14,7 @@
     <string name="on_start">ON_START</string>
     <string name="on_stop">ON_STOP</string>
     <string name="on_destroy">ON_DESTROY</string>
+    <string name="ingredient_number_name">%1$s. %2$s</string>
+    <string name="RECIPE_ID_EXTRA">com.krinotech.bakingapp.RECIPE_ID_EXTRA</string>
+    <string name="DETAILS_EXTRA">DETAILS_EXTRA</string>
 </resources>

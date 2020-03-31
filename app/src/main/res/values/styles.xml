@@ -8,4 +8,31 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="recipe">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_margin">@dimen/margin_standard_size</item>
+        <item name="android:textSize">@dimen/text_extra_large</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:padding">@dimen/padding_standard_size</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/card_gradient</item>
+    </style>
+
+    <style name="step" parent="recipe">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_standard_size</item>
+    </style>
+
+    <style name="ingredients" parent="@style/recipe">
+        <item name="android:layout_height">80dp</item>
+        <item name="android:textSize">@dimen/text_standard_size</item>
+    </style>
+
+    <style name="linear_layout_vertical_match">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
 </resources>

@@ -17,6 +17,7 @@ import com.krinotech.bakingapp.R;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
 import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.recyclerview.RecipeAdapter;
+import com.krinotech.bakingapp.view.MainActivity;
 
 import java.util.List;
 
@@ -59,7 +60,9 @@ public class RecipesFragment extends Fragment {
     }
 
     private void initRecyclerView(Context context) {
-        recipeAdapter = new RecipeAdapter();
+        MainActivity mainActivity = (MainActivity) getActivity();
+
+        recipeAdapter = new RecipeAdapter(mainActivity);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, RecyclerView.VERTICAL, false);
@@ -68,6 +71,5 @@ public class RecipesFragment extends Fragment {
 
         recyclerView.setAdapter(recipeAdapter);
 
-        recyclerView.setHasFixedSize(true);
     }
 }

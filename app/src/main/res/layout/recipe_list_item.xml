@@ -20,15 +20,8 @@
 
         <TextView
             android:id="@+id/tv_recipe_name"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:padding="10dp"
-            android:layout_margin="3dp"
-            android:background="@drawable/card_gradient"
             android:text="@{recipe.name}"
-            android:textColor="@color/black"
-            android:textSize="40sp"
+            style="@style/recipe"
             tools:text="Apple Pie"
             />
     </androidx.cardview.widget.CardView>
