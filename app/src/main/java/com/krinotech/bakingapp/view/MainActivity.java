@@ -62,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
         if ( backStackCount == 1) {
             finish();
         } else if (backStackCount > 1) {
+            if(backStackCount == 2) {
+                setTitle(getString(R.string.main_activity_title));
+            }
             fragmentManager.popBackStack();
         }
         else {
