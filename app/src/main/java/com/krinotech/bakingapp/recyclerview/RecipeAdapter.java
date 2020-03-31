@@ -1,5 +1,7 @@
 package com.krinotech.bakingapp.recyclerview;
 
+import android.nfc.Tag;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,8 @@ import com.krinotech.bakingapp.model.Recipe;
 import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
+    public static final String TAG = RecipeAdapter.class.getSimpleName();
+
     private List<Recipe> recipes;
     private OnItemClickListener clickListener;
 
@@ -47,6 +51,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     }
 
     public void setRecipes(List<Recipe> recipes) {
+        Log.d(TAG, "setRecipes: ");
         this.recipes = recipes;
         notifyDataSetChanged();
     }

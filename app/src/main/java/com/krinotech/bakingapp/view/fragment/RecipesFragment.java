@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -41,6 +42,22 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        MainViewModelFactory mainViewModelFactory = InjectorUtils.provideMainActivityViewModelFactory(getActivity().getApplicationContext());
+        MainViewModel mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(MainViewModel.class);
+
+        mainViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
+
+            @Override
+            public void onChanged(List<Recipe> recipes) {
+                hideProgressBar();
+                recipeAdapter.setRecipes(recipes);
+            }
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,20 +71,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
 
         initRecyclerView(getActivity());
 
-        MainViewModelFactory mainViewModelFactory = InjectorUtils.provideMainActivityViewModelFactory(getActivity().getApplicationContext());
-        MainViewModel mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(MainViewModel.class);
-
         showProgressBar();
-        mainViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
-
-            @Override
-            public void onChanged(List<Recipe> recipes) {
-                System.out.println(recipes);
-                hideProgressBar();
-                recipeAdapter.setRecipes(recipes);
-                recipeAdapter.notifyDataSetChanged();
-            }
-        });
         new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());
 
         return rootView;

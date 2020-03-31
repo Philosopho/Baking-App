@@ -43,7 +43,6 @@ public class RecipeDetailsFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_recipe_details, container, false);
 
         int recipeId = getArguments().getInt(getString(R.string.RECIPE_ID_EXTRA));
-        System.out.println(recipeId);
         recipeIdSaved = recipeId;
         if(savedInstanceState != null) {
             System.out.println("NOT NULL");
@@ -59,7 +58,6 @@ public class RecipeDetailsFragment extends Fragment {
 
             @Override
             public void onChanged(RecipeDetails recipeDetails) {
-                System.out.println("OnChanged");
                 getActivity().setTitle(recipeDetails.recipe.getName());
                 initRecyclerView(rootView.getContext());
                 detailsAdapter.setSteps(recipeDetails);
