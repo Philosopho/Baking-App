@@ -59,6 +59,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
 
         showProgressBar();
         mainViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
+
             @Override
             public void onChanged(List<Recipe> recipes) {
                 System.out.println(recipes);

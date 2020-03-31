@@ -1,14 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.fragment.DetailsFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <LinearLayout
+        style="@style/linear_layout_vertical_match"
+        >
+        <VideoView
+            android:id="@+id/videoView_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_standard_size"
+            android:padding="@dimen/padding_standard_size"
+            />
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tv_step_details"
+            style="@style/step"
+            tools:text="@tools:sample/lorem" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:id="@+id/btn_next_step"
+                android:layout_weight="1"
+                style="@style/button"
+                tools:text="Prev step"
+                />
+
+            <Button
+                android:id="@+id/btn_previous_step"
+                android:layout_weight="1"
+                style="@style/button"
+                tools:text="Next step"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+
+</ScrollView>
