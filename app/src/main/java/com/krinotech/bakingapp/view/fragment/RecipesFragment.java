@@ -52,7 +52,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
 
         recyclerView = rootView.findViewById(R.id.rv_recipe);
 
-        initRecyclerView(rootView.getContext());
+        initRecyclerView(getActivity());
 
         MainViewModelFactory mainViewModelFactory = InjectorUtils.provideMainActivityViewModelFactory(getActivity().getApplicationContext());
         MainViewModel mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(MainViewModel.class);
@@ -61,11 +61,12 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
         mainViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(List<Recipe> recipes) {
+                System.out.println(recipes);
                 hideProgressBar();
                 recipeAdapter.setRecipes(recipes);
+                recipeAdapter.notifyDataSetChanged();
             }
         });
-
         new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());
 
         return rootView;
@@ -110,6 +111,5 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("fragment", RecipesFragment.TAG);
-
     }
 }
