@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,12 +43,11 @@ public class RecipeDetailsFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_recipe_details, container, false);
 
-        int recipeId = getArguments().getInt(getString(R.string.RECIPE_ID_EXTRA));
+        int recipeId = getArguments().getInt(getString(R.string.RECIPE_ID_EXTRA), -1);
         recipeIdSaved = recipeId;
-        if(savedInstanceState != null) {
-            System.out.println("NOT NULL");
+        if(savedInstanceState != null && recipeId == -1) {
+            Log.d(TAG, "onCreateView: " + recipeId);
             recipeId = savedInstanceState.getInt(getString(R.string.RECIPE_ID_EXTRA));
-            System.out.println(recipeId);
         }
         recyclerView = rootView.findViewById(R.id.rv_recipe_details);
 

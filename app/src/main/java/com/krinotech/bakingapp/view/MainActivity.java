@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -28,32 +29,48 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private MainViewModel mainViewModel;
-    private ProgressBar progressBar;
     private FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState == null ) {
-            System.out.println("NULL");
+        fragmentManager = getSupportFragmentManager();
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
+        setContentView(R.layout.activity_main);
+        setTitle(getString(R.string.main_activity_title));
 
-            setContentView(R.layout.activity_main);
-            setTitle(getString(R.string.main_activity_title));
+        RecipesFragment recipesFragment = new RecipesFragment();
 
-            progressBar = findViewById(R.id.pb_circular);
-
-            RecipesFragment recipesFragment = new RecipesFragment();
-
+        if(fragmentExists(RecipesFragment.TAG)) {
+            Log.d(TAG, "fragment exists");
+        }
+        else {
             fragmentManager
                     .beginTransaction()
                     .add(R.id.fl_recipes_container, recipesFragment, RecipesFragment.TAG)
+                    .addToBackStack(null)
                     .commit();
         }
+
         new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());
+    }
+
+    @Override
+    public void onBackPressed() {
+        int backStackCount = fragmentManager.getBackStackEntryCount();
+        if ( backStackCount == 1) {
+            finish();
+        } else if (backStackCount > 1) {
+            fragmentManager.popBackStack();
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    private boolean fragmentExists(String tag) {
+        return fragmentManager.findFragmentByTag(tag) != null;
     }
 }
 

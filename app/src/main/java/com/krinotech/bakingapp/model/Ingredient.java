@@ -9,7 +9,7 @@ import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "ingredient")
 public class Ingredient {
-    public static final String INGREDIENTS = "Ingredients\n\n";
+    public static final String INGREDIENTS = "Ingredients\n";
 
     @PrimaryKey(autoGenerate = true)
     private long ingredientId;

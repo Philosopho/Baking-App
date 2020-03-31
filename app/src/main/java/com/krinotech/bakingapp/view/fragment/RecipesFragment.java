@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,18 +46,6 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        MainViewModelFactory mainViewModelFactory = InjectorUtils.provideMainActivityViewModelFactory(getActivity().getApplicationContext());
-        MainViewModel mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(MainViewModel.class);
-
-        mainViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
-
-            @Override
-            public void onChanged(List<Recipe> recipes) {
-                hideProgressBar();
-                recipeAdapter.setRecipes(recipes);
-            }
-        });
     }
 
     @Override
@@ -72,6 +61,17 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
         initRecyclerView(getActivity());
 
         showProgressBar();
+        MainViewModelFactory mainViewModelFactory = InjectorUtils.provideMainActivityViewModelFactory(getActivity().getApplicationContext());
+        MainViewModel mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(MainViewModel.class);
+
+        mainViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
+            @Override
+            public void onChanged(List<Recipe> recipes) {
+                hideProgressBar();
+                recipeAdapter.setRecipes(recipes);
+            }
+        });
+
         new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());
 
         return rootView;
@@ -92,7 +92,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
     @Override
     public void clickRecipe(Recipe recipe) {
         Fragment fragment = new RecipeDetailsFragment();
-
+        Log.d(TAG, "clickRecipe: " + recipe.getId());
         Bundle bundle = new Bundle();
         bundle.putInt(getString(R.string.RECIPE_ID_EXTRA), recipe.getId());
 
@@ -100,7 +100,8 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
 
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fl_recipes_container, fragment)
+                .replace(R.id.fl_recipes_container, fragment, RecipeDetailsFragment.TAG)
+                .addToBackStack(null)
                 .commit();
     }
 

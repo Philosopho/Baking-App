@@ -21,15 +21,15 @@ public class Step {
     private String shortDescription;
 
     private String description;
-    private String videoUrl;
+    private String videoURL;
     private String thumbnailURL;
 
-    public Step(long stepId, int recipeId, String shortDescription, String description, String videoUrl, String thumbnailURL) {
+    public Step(long stepId, int recipeId, String shortDescription, String description, String videoURL, String thumbnailURL) {
         this.stepId = stepId;
         this.recipeId = recipeId;
         this.shortDescription = shortDescription;
         this.description = description;
-        this.videoUrl = videoUrl;
+        this.videoURL = videoURL;
         this.thumbnailURL = thumbnailURL;
     }
 
@@ -45,8 +45,8 @@ public class Step {
         return description;
     }
 
-    public String getVideoUrl() {
-        return videoUrl;
+    public String getVideoURL() {
+        return videoURL;
     }
 
     public String getThumbnailURL() {

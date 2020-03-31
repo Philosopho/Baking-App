@@ -21,8 +21,8 @@ public interface RecipeDao {
     LiveData<List<Recipe>> loadRecipes();
 
     @Transaction
-    @Query("SELECT * FROM recipe where :id")
-    LiveData<RecipeDetails> loadRecipeDetails(int id);
+    @Query("SELECT * FROM recipe where id = :recipeId")
+    LiveData<RecipeDetails> loadRecipeDetails(int recipeId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertRecipes(List<Recipe> recipes);

@@ -35,7 +35,7 @@
         <item name="android:orientation">vertical</item>
     </style>
 
-    <style name="button">
+    <style name="button" parent="Widget.AppCompat.ActionButton">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_margin">@dimen/margin_standard_size</item>
