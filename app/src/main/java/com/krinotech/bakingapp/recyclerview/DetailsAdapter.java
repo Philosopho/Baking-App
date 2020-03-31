@@ -10,11 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.krinotech.bakingapp.R;
 import com.krinotech.bakingapp.databinding.RecipeIngredientsItemBinding;
+import com.krinotech.bakingapp.model.Ingredient;
 import com.krinotech.bakingapp.model.RecipeDetails;
-import com.krinotech.bakingapp.model.Step;
-import com.krinotech.bakingapp.util.StringUtil;
-
-import java.util.List;
 
 public class DetailsAdapter extends RecyclerView.Adapter<DetailsViewHolder> {
     public RecipeDetails recipeDetails;
@@ -35,7 +32,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull DetailsViewHolder holder, int position) {
         if(position == 0) {
-            holder.bind(StringUtil.buildIngredient(recipeDetails.ingredients));
+            holder.bind(Ingredient.INGREDIENTS);
         }
         else {
             holder.bind(recipeDetails.steps.get(position - 1).getShortDescription());

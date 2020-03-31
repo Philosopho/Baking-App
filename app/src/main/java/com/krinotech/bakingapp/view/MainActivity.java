@@ -1,5 +1,6 @@
 package com.krinotech.bakingapp.view;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -7,6 +8,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -24,7 +26,7 @@ import com.krinotech.bakingapp.viewmodel.MainViewModelFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnItemClickListener {
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private MainViewModel mainViewModel;
     private ProgressBar progressBar;
@@ -34,58 +36,24 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
-        setTitle(getString(R.string.main_activity_title));
+        if (savedInstanceState == null ) {
+            System.out.println("NULL");
 
-        progressBar = findViewById(R.id.pb_circular);
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
-        RecipesFragment recipesFragment = new RecipesFragment();
+            setContentView(R.layout.activity_main);
+            setTitle(getString(R.string.main_activity_title));
 
-        fragmentManager = getSupportFragmentManager();
+            progressBar = findViewById(R.id.pb_circular);
 
-        fragmentManager
-                .beginTransaction()
-                .add(R.id.fl_recipes_container, recipesFragment)
-                .commit();
+            RecipesFragment recipesFragment = new RecipesFragment();
 
+            fragmentManager
+                    .beginTransaction()
+                    .add(R.id.fl_recipes_container, recipesFragment, RecipesFragment.TAG)
+                    .commit();
+        }
         new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());
-
-        MainViewModelFactory mainViewModelFactory = InjectorUtils.provideMainActivityViewModelFactory(getApplicationContext());
-        mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(MainViewModel.class);
-
-        showProgressBar();
-        mainViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
-            @Override
-            public void onChanged(List<Recipe> recipes) {
-                hideProgressBar();
-                if(mainViewModel.recipesExist()) {
-                    recipesFragment.setRecipes(recipes);
-                }
-            }
-        });
-    }
-
-    private void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    private void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void clickRecipe(Recipe recipe) {
-        Fragment fragment = new RecipeDetailsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(getString(R.string.RECIPE_ID_EXTRA), recipe.getId());
-
-        fragment.setArguments(bundle);
-
-        fragmentManager
-                .beginTransaction()
-                .replace(R.id.fl_recipes_container, fragment)
-                .commit();
-
     }
 }
 

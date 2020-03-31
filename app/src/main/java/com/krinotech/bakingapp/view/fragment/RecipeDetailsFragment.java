@@ -11,14 +11,17 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.PersistableBundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.krinotech.bakingapp.R;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
+import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.model.RecipeDetails;
 import com.krinotech.bakingapp.recyclerview.DetailsAdapter;
+import com.krinotech.bakingapp.recyclerview.RecipeAdapter;
 import com.krinotech.bakingapp.util.InjectorUtils;
 import com.krinotech.bakingapp.viewmodel.DetailsViewModel;
 import com.krinotech.bakingapp.viewmodel.DetailsViewModelFactory;
@@ -27,6 +30,7 @@ public class RecipeDetailsFragment extends Fragment {
     public static final String TAG = RecipeDetailsFragment.class.getSimpleName();
     private DetailsAdapter detailsAdapter;
     private RecyclerView recyclerView;
+    private int recipeIdSaved;
 
     public RecipeDetailsFragment() {
         // Required empty public constructor
@@ -35,18 +39,27 @@ public class RecipeDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_recipe_details, container, false);
+
+        final View rootView = inflater.inflate(R.layout.fragment_recipe_details, container, false);
+
+        int recipeId = getArguments().getInt(getString(R.string.RECIPE_ID_EXTRA));
+        System.out.println(recipeId);
+        recipeIdSaved = recipeId;
+        if(savedInstanceState != null) {
+            System.out.println("NOT NULL");
+            recipeId = savedInstanceState.getInt(getString(R.string.RECIPE_ID_EXTRA));
+            System.out.println(recipeId);
+        }
         recyclerView = rootView.findViewById(R.id.rv_recipe_details);
 
-        int id = getArguments().getInt(getString(R.string.RECIPE_ID_EXTRA));
-
-        DetailsViewModelFactory detailsViewModelFactory = InjectorUtils.provideDetailsViewModelFactory(getContext(), id);
+        DetailsViewModelFactory detailsViewModelFactory = InjectorUtils.provideDetailsViewModelFactory(getContext(), recipeId);
 
         DetailsViewModel detailsViewModel = ViewModelProviders.of(this, detailsViewModelFactory).get(DetailsViewModel.class);
         detailsViewModel.getRecipeDetails().observe(this, new Observer<RecipeDetails>() {
 
             @Override
             public void onChanged(RecipeDetails recipeDetails) {
+                System.out.println("OnChanged");
                 getActivity().setTitle(recipeDetails.recipe.getName());
                 initRecyclerView(rootView.getContext());
                 detailsAdapter.setSteps(recipeDetails);
@@ -78,8 +91,9 @@ public class RecipeDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(getString(R.string.RECIPE_ID_EXTRA), recipeIdSaved);
     }
 
     private void initRecyclerView(Context context) {
@@ -93,5 +107,4 @@ public class RecipeDetailsFragment extends Fragment {
         recyclerView.setAdapter(detailsAdapter);
 
     }
-
 }

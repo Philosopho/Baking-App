@@ -5,6 +5,10 @@
     android:layout_height="match_parent"
     >
 
+    <include
+        layout="@layout/progress_bar"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_recipe"
         android:layout_width="match_parent"

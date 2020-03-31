@@ -2,11 +2,6 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
-
-    <include
-        layout="@layout/progress_bar"
-        />
-
     <FrameLayout
         android:id="@+id/fl_recipes_container"
         android:layout_width="match_parent"
