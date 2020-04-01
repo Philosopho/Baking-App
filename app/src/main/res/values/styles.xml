@@ -24,6 +24,12 @@
         <item name="android:textSize">@dimen/text_standard_size</item>
     </style>
 
+    <style name="step_formatted" parent="recipe">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/text_standard_size</item>
+    </style>
+
     <style name="ingredients" parent="@style/recipe">
         <item name="android:layout_height">80dp</item>
         <item name="android:textSize">@dimen/text_standard_size</item>

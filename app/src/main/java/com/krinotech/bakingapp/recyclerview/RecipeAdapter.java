@@ -51,7 +51,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     }
 
     public void setRecipes(List<Recipe> recipes) {
-        Log.d(TAG, "setRecipes: ");
         this.recipes = recipes;
         notifyDataSetChanged();
     }

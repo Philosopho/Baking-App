@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,15 +18,16 @@ import android.view.ViewGroup;
 
 import com.krinotech.bakingapp.R;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
-import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.model.RecipeDetails;
+import com.krinotech.bakingapp.model.Step;
 import com.krinotech.bakingapp.recyclerview.DetailsAdapter;
-import com.krinotech.bakingapp.recyclerview.RecipeAdapter;
 import com.krinotech.bakingapp.util.InjectorUtils;
 import com.krinotech.bakingapp.viewmodel.DetailsViewModel;
 import com.krinotech.bakingapp.viewmodel.DetailsViewModelFactory;
 
-public class RecipeDetailsFragment extends Fragment {
+import java.util.ArrayList;
+
+public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.OnClickRecipeDetails {
     public static final String TAG = RecipeDetailsFragment.class.getSimpleName();
     private DetailsAdapter detailsAdapter;
     private RecyclerView recyclerView;
@@ -95,7 +95,7 @@ public class RecipeDetailsFragment extends Fragment {
     }
 
     private void initRecyclerView(Context context) {
-        detailsAdapter = new DetailsAdapter();
+        detailsAdapter = new DetailsAdapter(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, RecyclerView.VERTICAL, false);
@@ -104,5 +104,36 @@ public class RecipeDetailsFragment extends Fragment {
 
         recyclerView.setAdapter(detailsAdapter);
 
+    }
+
+    @Override
+    public void clickDetails(RecipeDetails recipeDetails, int position) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(getString(R.string.STEP_EXTRA), (ArrayList<Step>) recipeDetails.steps);
+        bundle.putInt(getString(R.string.POSITION_EXTRA), position);
+
+        Fragment fragment = new DetailsFragment();
+        fragment.setArguments(bundle);
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fl_recipes_container, fragment, DetailsFragment.TAG)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void clickDetails(String string) {
+        Bundle bundle = new Bundle();
+        bundle.putString(getString(R.string.INGREDIENTS_EXTRA), string);
+
+        Fragment fragment = new DetailsFragment();
+        fragment.setArguments(bundle);
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fl_recipes_container, fragment, DetailsFragment.TAG)
+                .addToBackStack(null)
+                .commit();
     }
 }

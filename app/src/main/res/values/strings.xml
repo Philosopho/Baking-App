@@ -17,4 +17,9 @@
     <string name="ingredient_number_name">%1$s. %2$s</string>
     <string name="RECIPE_ID_EXTRA">com.krinotech.bakingapp.RECIPE_ID_EXTRA</string>
     <string name="DETAILS_EXTRA">DETAILS_EXTRA</string>
+    <string name="INGREDIENTS_EXTRA">INGREDIENTS_EXTRA</string>
+    <string name="STEP_EXTRA">STEP_EXTRA</string>
+    <string name="POSITION_EXTRA">POSITION_EXTRA</string>
+    <string name="prev_step">Prev Step</string>
+    <string name="next_step">Next Step</string>
 </resources>

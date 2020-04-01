@@ -1,48 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.fragment.DetailsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <LinearLayout
-        style="@style/linear_layout_vertical_match"
-        >
-        <VideoView
-            android:id="@+id/videoView_details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/padding_standard_size"
-            android:padding="@dimen/padding_standard_size"
-            />
+<layout>
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.fragment.DetailsFragment">
 
-        <TextView
-            android:id="@+id/tv_step_details"
-            style="@style/step"
-            tools:text="@tools:sample/lorem" />
-
+        <!-- TODO: Update blank fragment layout -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
+            style="@style/linear_layout_vertical_match"
             >
-
-            <Button
-                android:id="@+id/btn_next_step"
-                android:layout_weight="1"
-                style="@style/button"
-                tools:text="Prev step"
+            <VideoView
+                android:id="@+id/videoView_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/padding_standard_size"
+                android:padding="@dimen/padding_standard_size"
                 />
 
-            <Button
-                android:id="@+id/btn_previous_step"
-                android:layout_weight="1"
-                style="@style/button"
-                tools:text="Next step"
-                />
+            <TextView
+                android:id="@+id/tv_step_details"
+                style="@style/step_formatted"
+                tools:text="@tools:sample/lorem" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                >
+
+                <Button
+                    android:id="@+id/btn_previous_step"
+                    android:layout_weight="1"
+                    android:text="@string/prev_step"
+                    style="@style/button"
+                    />
+
+                <Button
+                    android:id="@+id/btn_next_step"
+                    android:layout_weight="1"
+                    android:text="@string/next_step"
+                    style="@style/button"
+                    />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-
-
-</ScrollView>
+    </ScrollView>
+</layout>

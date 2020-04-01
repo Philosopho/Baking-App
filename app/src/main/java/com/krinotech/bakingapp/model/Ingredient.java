@@ -79,9 +79,6 @@ public class Ingredient {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(INGREDIENTS);
-        stringBuilder.append(ingredientId);
-        stringBuilder.append(". ");
         stringBuilder.append(quantity);
         stringBuilder.append(" ");
         stringBuilder.append(measure.toLowerCase());

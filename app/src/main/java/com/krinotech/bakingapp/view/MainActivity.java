@@ -42,10 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         RecipesFragment recipesFragment = new RecipesFragment();
 
-        if(fragmentExists(RecipesFragment.TAG)) {
-            Log.d(TAG, "fragment exists");
-        }
-        else {
+        if(!fragmentExists(RecipesFragment.TAG)) {
             fragmentManager
                     .beginTransaction()
                     .add(R.id.fl_recipes_container, recipesFragment, RecipesFragment.TAG)

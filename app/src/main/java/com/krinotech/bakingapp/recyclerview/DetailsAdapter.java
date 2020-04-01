@@ -11,12 +11,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.krinotech.bakingapp.R;
 import com.krinotech.bakingapp.databinding.RecipeIngredientsItemBinding;
 import com.krinotech.bakingapp.model.Ingredient;
+import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.model.RecipeDetails;
+import com.krinotech.bakingapp.util.StringUtil;
 
 public class DetailsAdapter extends RecyclerView.Adapter<DetailsViewHolder> {
     public RecipeDetails recipeDetails;
+    public OnClickRecipeDetails clickHandler;
 
-    public DetailsAdapter() {}
+    public interface OnClickRecipeDetails {
+        void clickDetails(RecipeDetails recipeDetails, int position);
+
+        void clickDetails(String string);
+    }
+    public DetailsAdapter(OnClickRecipeDetails clickHandler) {
+        this.clickHandler = clickHandler;
+    }
 
     @NonNull
     @Override
@@ -32,10 +42,12 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull DetailsViewHolder holder, int position) {
         if(position == 0) {
-            holder.bind(Ingredient.INGREDIENTS);
+            holder.bind(Ingredient.INGREDIENTS, clickHandler);
+            holder.bindIngredientClick(StringUtil.buildIngredient(recipeDetails.ingredients), this.clickHandler);
         }
         else {
-            holder.bind(recipeDetails.steps.get(position - 1).getShortDescription());
+            holder.bind(recipeDetails.steps.get(position - 1).getShortDescription(),
+                    recipeDetails, clickHandler, position - 1);
         }
     }
 
