@@ -1,6 +1,7 @@
 package com.krinotech.bakingapp.view.fragment;
 
 
+import android.annotation.NonNull;
 import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
