@@ -29,6 +29,8 @@ import java.util.ArrayList;
 
 public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.OnClickRecipeDetails {
     public static final String TAG = RecipeDetailsFragment.class.getSimpleName();
+    public static final String RECIPE_NAME = "recipe name";
+
     private DetailsAdapter detailsAdapter;
     private RecyclerView recyclerView;
     private int recipeIdSaved;
@@ -111,6 +113,7 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(getString(R.string.STEP_EXTRA), (ArrayList<Step>) recipeDetails.steps);
         bundle.putInt(getString(R.string.POSITION_EXTRA), position);
+        bundle.putString(RECIPE_NAME, recipeDetails.recipe.getName());
 
         Fragment fragment = new DetailsFragment();
         fragment.setArguments(bundle);
@@ -123,9 +126,10 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
     }
 
     @Override
-    public void clickDetails(String string) {
+    public void clickDetails(String string, String recipeName) {
         Bundle bundle = new Bundle();
         bundle.putString(getString(R.string.INGREDIENTS_EXTRA), string);
+        bundle.putString(RECIPE_NAME, recipeName);
 
         Fragment fragment = new DetailsFragment();
         fragment.setArguments(bundle);

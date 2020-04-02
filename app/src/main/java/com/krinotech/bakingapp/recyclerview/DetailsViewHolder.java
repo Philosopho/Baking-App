@@ -36,11 +36,11 @@ public class DetailsViewHolder extends RecyclerView.ViewHolder {
         recipeIngredientsItemBinding.executePendingBindings();
     }
 
-    public void bindIngredientClick(String detail, DetailsAdapter.OnClickRecipeDetails onClick) {
+    public void bindIngredientClick(String detail, DetailsAdapter.OnClickRecipeDetails onClick, String name) {
         recipeIngredientsItemBinding.tvStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClick.clickDetails(detail);
+                onClick.clickDetails(detail, name);
             }
         });
     }

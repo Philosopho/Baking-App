@@ -86,6 +86,9 @@ public class DetailsFragment extends Fragment {
 
         Bundle args = getArguments();
         String stepsKey = getString(R.string.STEP_EXTRA);
+        String recipeName = args.getString(RecipeDetailsFragment.RECIPE_NAME);
+
+        getActivity().setTitle(recipeName);
 
         if(args.containsKey(stepsKey)) {
             String positionKey = getString(R.string.POSITION_EXTRA);
@@ -142,10 +145,12 @@ public class DetailsFragment extends Fragment {
         int orientation = getResources().getConfiguration().orientation;
         boolean orientationLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE;
 
-        outState.putInt(LAST_VIDEO, lastVideo);
-        outState.putLong(RESUME_POSITION, exoPlayer.getContentPosition());
-        outState.putInt(RESUME_WINDOW, exoPlayer.getCurrentWindowIndex());
-        outState.putBoolean(LANDSCAPE_ORIENTATION, orientationLandscape);
+        if(exoPlayer != null) {
+            outState.putInt(LAST_VIDEO, lastVideo);
+            outState.putLong(RESUME_POSITION, exoPlayer.getContentPosition());
+            outState.putInt(RESUME_WINDOW, exoPlayer.getCurrentWindowIndex());
+            outState.putBoolean(LANDSCAPE_ORIENTATION, orientationLandscape);
+        }
     }
 
     private void setViews(int position) {
@@ -199,14 +204,13 @@ public class DetailsFragment extends Fragment {
             ).createMediaSource(chosenUrl);
 
             exoPlayer.prepare(mediaSource);
-            exoPlayer.setPlayWhenReady(true);
             if(hasResumePosition) {
-                Log.d(TAG, "activateVideo: ");
                 fragmentDetailsBinding
                         .videoViewDetails
                         .getPlayer()
                         .seekTo(resumeWindow, resumePosition);
             }
+            exoPlayer.setPlayWhenReady(true);
         }
     }
 

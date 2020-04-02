@@ -22,7 +22,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsViewHolder> {
     public interface OnClickRecipeDetails {
         void clickDetails(RecipeDetails recipeDetails, int position);
 
-        void clickDetails(String string);
+        void clickDetails(String detail, String recipeName);
     }
     public DetailsAdapter(OnClickRecipeDetails clickHandler) {
         this.clickHandler = clickHandler;
@@ -43,7 +43,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsViewHolder> {
     public void onBindViewHolder(@NonNull DetailsViewHolder holder, int position) {
         if(position == 0) {
             holder.bind(Ingredient.INGREDIENTS, clickHandler);
-            holder.bindIngredientClick(StringUtil.buildIngredient(recipeDetails.ingredients), this.clickHandler);
+            holder.bindIngredientClick(StringUtil.buildIngredient(recipeDetails.ingredients), this.clickHandler, recipeDetails.recipe.getName());
         }
         else {
             holder.bind(recipeDetails.steps.get(position - 1).getShortDescription(),
