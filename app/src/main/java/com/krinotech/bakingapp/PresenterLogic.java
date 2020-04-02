@@ -14,4 +14,15 @@ public class PresenterLogic {
         return url != null && !url.isEmpty()
                 || thumbnailUrl != null && !thumbnailUrl.isEmpty();
     }
+
+    public static String getUri(String url, String thumbnailUrl) {
+        String chosenUrl;
+        if (url.isEmpty()){
+            chosenUrl = thumbnailUrl;
+        }
+        else {
+            chosenUrl = url;
+        }
+        return chosenUrl;
+    }
 }

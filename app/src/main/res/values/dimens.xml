@@ -3,7 +3,8 @@
     <dimen name="text_standard_size">24sp</dimen>
     <dimen name="text_extra_large">40dp</dimen>
     <dimen name="padding_standard_size">8dp</dimen>
-    <dimen name="margin_standard_size">8dp</dimen>
+    <dimen name="margin_standard_size_horizontal">8dp</dimen>
+    <dimen name="margin_standard_size_vertical">4dp</dimen>
 
     <dimen name="step_layout_height">80dp</dimen>
     <dimen name="text_standard_size_btn">16sp</dimen>

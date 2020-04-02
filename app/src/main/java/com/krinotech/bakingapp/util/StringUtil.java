@@ -1,5 +1,7 @@
 package com.krinotech.bakingapp.util;
 
+import android.util.Log;
+
 import com.krinotech.bakingapp.model.Ingredient;
 
 import java.util.List;
@@ -9,14 +11,15 @@ public class StringUtil {
     public static String buildIngredient(List<Ingredient> ingredients) {
         StringBuilder builder = new StringBuilder();
 
-        int size = ingredients.size();
+        //TODO: Figure out bug, Ingredients coming in double (duplicates)
+        int size = ingredients.size() / 2;
 
         for(int i = 0; i < size; i++) {
             if(i == 0){
                 builder.append(Ingredient.INGREDIENTS);
             }
-            if(i < size - 1) {
-                builder.append("\n\n");
+            else {
+                builder.append("\n");
             }
             builder.append(i + 1);
             builder.append(". ");

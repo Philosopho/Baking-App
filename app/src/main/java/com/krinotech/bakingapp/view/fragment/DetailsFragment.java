@@ -1,23 +1,42 @@
 package com.krinotech.bakingapp.view.fragment;
 
 
-import android.annotation.NonNull;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
+import com.krinotech.bakingapp.BuildConfig;
 import com.krinotech.bakingapp.PresenterLogic;
 import com.krinotech.bakingapp.R;
 import com.krinotech.bakingapp.databinding.FragmentDetailsBinding;
 import com.krinotech.bakingapp.model.Step;
 
+import java.net.URL;
 import java.util.List;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +45,7 @@ public class DetailsFragment extends Fragment {
     public static final String TAG = DetailsFragment.class.getSimpleName();
     public FragmentDetailsBinding fragmentDetailsBinding;
     private List<Step> steps;
+    private ExoPlayer exoPlayer;
 
 
     public DetailsFragment() {
@@ -56,6 +76,10 @@ public class DetailsFragment extends Fragment {
         else {
             hideVideosAndButtons();
             String text = args.getString(getString(R.string.INGREDIENTS_EXTRA));
+            ViewGroup.LayoutParams layoutParams = fragmentDetailsBinding.tvStepDetails.getLayoutParams();
+            layoutParams.height = MATCH_PARENT;
+
+            fragmentDetailsBinding.tvStepDetails.setLayoutParams(layoutParams);
             setDetails(text);
             return fragmentDetailsBinding.getRoot();
         }
@@ -81,16 +105,56 @@ public class DetailsFragment extends Fragment {
         else {
             hideNextButton();
         }
+        releasePlayer();
         if(PresenterLogic.videoExists(url, thumbnailUrl)) {
-            activateVideo(url, thumbnailUrl);
+            Uri chosenUrl = Uri
+                    .parse(
+                            PresenterLogic.getUri(url, thumbnailUrl)
+                    );
+            activateVideo(chosenUrl);
         }
-        else {
-            hideVideo();
+        showVideo();
+    }
+
+    private void activateVideo(Uri chosenUrl) {
+        if(exoPlayer == null) {
+            TrackSelector trackSelector = new DefaultTrackSelector(getContext());
+            LoadControl loadControl = new DefaultLoadControl();
+
+            exoPlayer = new SimpleExoPlayer
+                    .Builder(getContext())
+                    .setLoadControl(loadControl)
+                    .setTrackSelector(trackSelector)
+                    .build();
+
+            fragmentDetailsBinding.videoViewDetails.setPlayer(exoPlayer);
+            String userAgent = Util.getUserAgent(getContext(), getString(R.string.app_name));
+
+            MediaSource mediaSource = new ProgressiveMediaSource.Factory(
+                    new DefaultDataSourceFactory(getContext(), userAgent)
+            ).createMediaSource(chosenUrl);
+
+            exoPlayer.prepare(mediaSource);
+            exoPlayer.setPlayWhenReady(true);
         }
     }
 
-    private void activateVideo(String url, String thumbnailUrl) {
+    private void showVideo() {
+        fragmentDetailsBinding.videoViewDetails.setVisibility(View.VISIBLE);
+    }
 
+    public void releasePlayer() {
+        if(exoPlayer != null) {
+            exoPlayer.stop(true);
+            exoPlayer.release();
+            exoPlayer = null;
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
     }
 
     private void activateNextBtn(int position) {
@@ -143,10 +207,6 @@ public class DetailsFragment extends Fragment {
         fragmentDetailsBinding
                 .tvStepDetails
                 .setText(text);
-    }
-
-    private void setVideo(String url) {
-
     }
 
     private void hideVideosAndButtons() {
