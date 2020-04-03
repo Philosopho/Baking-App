@@ -1,25 +1,21 @@
 package com.krinotech.bakingapp.view.fragment;
 
 
-import android.app.Dialog;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
-import android.view.Display;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -30,14 +26,12 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.krinotech.bakingapp.PresenterLogic;
 import com.krinotech.bakingapp.R;
 import com.krinotech.bakingapp.databinding.FragmentDetailsBinding;
 import com.krinotech.bakingapp.model.Step;
-import com.krinotech.bakingapp.view.MainActivity;
 
 import java.util.List;
 
@@ -56,7 +50,6 @@ public class DetailsFragment extends Fragment {
     private long resumePosition;
     private int resumeWindow;
     private int lastVideo = -1;
-    private boolean fullscreen = false;
 
     private FragmentDetailsBinding fragmentDetailsBinding;
     private List<Step> steps;
@@ -83,7 +76,6 @@ public class DetailsFragment extends Fragment {
             lastVideo = savedInstanceState.getInt(LAST_VIDEO);
             resumeWindow = savedInstanceState.getInt(RESUME_WINDOW);
             resumePosition = savedInstanceState.getLong(RESUME_POSITION);
-            fullscreen = savedInstanceState.getBoolean(LANDSCAPE_ORIENTATION);
         }
 
         Bundle args = getArguments();
@@ -104,6 +96,7 @@ public class DetailsFragment extends Fragment {
                 lastVideo = position;
             }
             steps = args.getParcelableArrayList(stepsKey);
+
             setViews(position);
 
             return fragmentDetailsBinding.getRoot();
@@ -130,33 +123,46 @@ public class DetailsFragment extends Fragment {
         super.onConfigurationChanged(newConfig);
 
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(getContext(), "landscape", Toast.LENGTH_SHORT).show();
-
+            if(exoPlayer != null) {
+                setFullScreen();
+            }
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Toast.makeText(getContext(), "portrait", Toast.LENGTH_SHORT).show();
+            if(exoPlayer != null) {
+                exitFullScreen();
+            }
         }
     }
 
-    //    private void initFullscreenDialog() {
-//
-//        fullScreenDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
-//            public void onBackPressed() {
-//                if (fullscreen)
-//                    closeFullscreenDialog();
-//                super.onBackPressed();
-//            }
-//        };
-//    }
-//
-//    private void closeFullscreenDialog() {
-//        ((ViewGroup) fragmentDetailsBinding.videoViewDetails
-//                .getParent())
-//                .removeView(fragmentDetailsBinding.videoViewDetails);
-//        ((FrameLayout) findViewById(R.id.main_media_frame)).addView(mExoPlayerView);
-//        mExoPlayerFullscreen = false;
-//        mFullScreenDialog.dismiss();
-//        mFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_fullscreen_expand));
-//    }
+    private void setFullScreen() {
+        hideButtonLayoutAndDetails();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) fragmentDetailsBinding.videoViewDetails.getLayoutParams();
+        marginLayoutParams.setMargins(0, 0, 0, 0);
+        fragmentDetailsBinding.videoViewDetails.setLayoutParams(marginLayoutParams);
+    }
+
+    private void exitFullScreen() {
+        showButtonLayoutAndDetails();
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) fragmentDetailsBinding.videoViewDetails.getLayoutParams();
+        
+        float horizontal_dps = getResources().getDimension(R.dimen.margin_standard_size_horizontal);
+        float vertical_dps = getResources().getDimension(R.dimen.margin_standard_size_vertical);
+        int horizontal_pixels = convertToPixels(horizontal_dps);
+        int vertical_pixels = convertToPixels(vertical_dps);
+
+        marginLayoutParams.setMargins(horizontal_pixels, vertical_pixels, horizontal_pixels, vertical_pixels);
+
+        fragmentDetailsBinding.videoViewDetails.setLayoutParams(marginLayoutParams);
+    }
+
+    private int convertToPixels(float dpValue) {
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,dpValue,
+                getResources().getDisplayMetrics()
+        );
+    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -198,12 +204,13 @@ public class DetailsFragment extends Fragment {
                             PresenterLogic.getUri(url, thumbnailUrl)
                     );
             activateVideo(chosenUrl);
+            if(getResources()
+                    .getConfiguration()
+                    .orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setFullScreen();
+            }
         }
         showVideo();
-    }
-
-    private void launchFullScreen() {
-
     }
 
     private void activateVideo(Uri chosenUrl) {
@@ -220,20 +227,23 @@ public class DetailsFragment extends Fragment {
             fragmentDetailsBinding.videoViewDetails.setPlayer(exoPlayer);
             String userAgent = Util.getUserAgent(getContext(), getString(R.string.app_name));
 
-            boolean hasResumePosition = resumeWindow != C.INDEX_UNSET;
-
             MediaSource mediaSource = new ProgressiveMediaSource.Factory(
                     new DefaultDataSourceFactory(getContext(), userAgent)
             ).createMediaSource(chosenUrl);
 
             exoPlayer.prepare(mediaSource);
-            if(hasResumePosition) {
-                fragmentDetailsBinding
-                        .videoViewDetails
-                        .getPlayer()
-                        .seekTo(resumeWindow, resumePosition);
-            }
+            seekToPosition();
             exoPlayer.setPlayWhenReady(true);
+        }
+    }
+
+    private void seekToPosition() {
+        boolean hasResumePosition = resumeWindow != C.INDEX_UNSET;
+        if(hasResumePosition) {
+            fragmentDetailsBinding
+                    .videoViewDetails
+                    .getPlayer()
+                    .seekTo(resumeWindow, resumePosition);
         }
     }
 
@@ -247,12 +257,6 @@ public class DetailsFragment extends Fragment {
             exoPlayer.release();
             exoPlayer = null;
         }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        releasePlayer();
     }
 
     private void activateNextBtn(int position) {
@@ -321,4 +325,20 @@ public class DetailsFragment extends Fragment {
         hideNextButton();
     }
 
+    private void hideButtonLayoutAndDetails() {
+        fragmentDetailsBinding.linearLayoutTwoDetails.setVisibility(View.GONE);
+        fragmentDetailsBinding.tvStepDetails.setVisibility(View.GONE);
+    }
+
+    private void showButtonLayoutAndDetails() {
+        fragmentDetailsBinding.linearLayoutTwoDetails.setVisibility(View.VISIBLE);
+        fragmentDetailsBinding.tvStepDetails.setVisibility(View.VISIBLE);
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
+    }
 }

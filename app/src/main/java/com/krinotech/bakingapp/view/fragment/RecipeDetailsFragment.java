@@ -70,20 +70,6 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
         return rootView;
     }
 
-    private void detailsFragment(String ingredients) {
-        Bundle bundle = new Bundle();
-        bundle.putString(getString(R.string.DETAILS_EXTRA), ingredients);
-
-        DetailsFragment detailsFragment = new DetailsFragment();
-        detailsFragment.setArguments(bundle);
-
-        getFragmentManager()
-                .beginTransaction()
-                .add(R.id.fl_details_container, detailsFragment)
-                .commit();
-
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
