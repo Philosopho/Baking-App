@@ -13,7 +13,9 @@ import com.krinotech.bakingapp.model.RecipeDetails;
 import com.krinotech.bakingapp.model.Step;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -72,7 +74,7 @@ public class RecipeRepository {
        executor.diskIO().execute(() -> {
             boolean shouldFetchNewRecipes = preferences.shouldFetchNewRecipes();
 
-            if(shouldFetchNewRecipes) {
+            if(!shouldFetchNewRecipes) {
                 Log.d(TAG, "refreshRecipes");
                 try {
                     Response<List<Recipe>> response = bakingApi.listRecipes().execute();
@@ -90,7 +92,13 @@ public class RecipeRepository {
                                 ingredients.addAll(recipe.getIngredients());
                                 steps.addAll(recipe.getSteps());
                             }
-                            recipeDao.insertRecipes(response.body());
+                            for(int i = 0; i < ingredients.size(); i++) {
+                                ingredients.get(i).setIngredientId(i + 1);
+                            }
+                            for(int i = 0; i < steps.size(); i++) {
+                                steps.get(i).setStepsId(i + 1);
+                            }
+                            recipeDao.insertRecipes(recipes);
                             recipeDao.insertIngredients(ingredients);
                             recipeDao.insertSteps(steps);
                         }

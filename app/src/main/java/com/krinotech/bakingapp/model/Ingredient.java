@@ -11,7 +11,7 @@ import static androidx.room.ForeignKey.CASCADE;
 public class Ingredient {
     public static final String INGREDIENTS = "Ingredients\n";
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private long ingredientId;
 
     private double quantity;

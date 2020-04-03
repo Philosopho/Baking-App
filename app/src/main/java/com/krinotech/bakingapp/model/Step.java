@@ -12,7 +12,7 @@ import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "steps")
 public class Step implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private long stepId;
 
     @ForeignKey
@@ -100,5 +100,9 @@ public class Step implements Parcelable {
 
     public void setRecipeId(int recipeId) {
         this.recipeId = recipeId;
+    }
+
+    public void setStepsId(long i) {
+        this.stepId = i;
     }
 }

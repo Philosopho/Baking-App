@@ -10,7 +10,8 @@
             <com.google.android.exoplayer2.ui.PlayerView
                 android:id="@+id/videoView_details"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="0dp"
+                android:layout_weight="3"
                 android:layout_marginTop="@dimen/margin_standard_size_vertical"
                 android:layout_marginBottom="@dimen/margin_standard_size_vertical"
                 android:layout_marginLeft="@dimen/margin_standard_size_horizontal"
@@ -20,30 +21,32 @@
                 />
             <TextView
                 android:id="@+id/tv_step_details"
+                android:layout_weight="4"
                 app:autoSizeTextType="uniform"
                 app:autoSizeMinTextSize="16sp"
                 app:autoSizeMaxTextSize="24sp"
                 app:autoSizeStepGranularity="2sp"
                 style="@style/step_formatted"
-                tools:text="@tools:sample/lorem" />
+                tools:text="@tools:sample/lorem/random" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_height="0dp"
+                android:weightSum="2"
+                android:layout_weight="1"
                 >
 
                 <Button
                     android:id="@+id/btn_previous_step"
-                    android:layout_weight="1"
                     android:text="@string/prev_step"
+                    android:layout_weight="1"
                     style="@style/button"
                     />
 
                 <Button
                     android:id="@+id/btn_next_step"
-                    android:layout_weight="1"
                     android:text="@string/next_step"
+                    android:layout_weight="1"
                     style="@style/button"
                     />
             </LinearLayout>

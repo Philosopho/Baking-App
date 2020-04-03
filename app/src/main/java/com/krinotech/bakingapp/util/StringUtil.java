@@ -12,7 +12,7 @@ public class StringUtil {
         StringBuilder builder = new StringBuilder();
 
         //TODO: Figure out bug, Ingredients coming in double (duplicates)
-        int size = ingredients.size() / 2;
+        int size = ingredients.size();
 
         for(int i = 0; i < size; i++) {
             if(i == 0){

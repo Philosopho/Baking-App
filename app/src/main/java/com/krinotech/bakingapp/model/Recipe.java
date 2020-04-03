@@ -72,4 +72,12 @@ public class Recipe {
     public String getImage() {
         return image;
     }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public void setSteps(List<Step> steps) {
+        this.steps = steps;
+    }
 }

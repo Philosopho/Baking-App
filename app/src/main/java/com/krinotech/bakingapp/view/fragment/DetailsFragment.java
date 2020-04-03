@@ -13,11 +13,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -45,7 +47,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * A simple {@link Fragment} subclass.
  */
 public class DetailsFragment extends Fragment {
-    public static final String TAG = DetailsFragment.class.getSimpleName();
+    public  static final String TAG = DetailsFragment.class.getSimpleName();
     private static final String RESUME_WINDOW = "resume window";
     private static final String RESUME_POSITION = "resume position";
     private static final String LANDSCAPE_ORIENTATION = "orientation";
@@ -53,12 +55,12 @@ public class DetailsFragment extends Fragment {
 
     private long resumePosition;
     private int resumeWindow;
+    private int lastVideo = -1;
     private boolean fullscreen = false;
 
     private FragmentDetailsBinding fragmentDetailsBinding;
     private List<Step> steps;
     private ExoPlayer exoPlayer;
-    private int lastVideo = -1;
 
 
     public DetailsFragment() {
@@ -118,7 +120,24 @@ public class DetailsFragment extends Fragment {
         }
     }
 
-//    private void initFullscreenDialog() {
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(getContext(), "landscape", Toast.LENGTH_SHORT).show();
+
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Toast.makeText(getContext(), "portrait", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //    private void initFullscreenDialog() {
 //
 //        fullScreenDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
 //            public void onBackPressed() {
@@ -181,6 +200,10 @@ public class DetailsFragment extends Fragment {
             activateVideo(chosenUrl);
         }
         showVideo();
+    }
+
+    private void launchFullScreen() {
+
     }
 
     private void activateVideo(Uri chosenUrl) {
