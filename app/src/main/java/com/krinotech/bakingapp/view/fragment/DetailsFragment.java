@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -44,7 +45,6 @@ public class DetailsFragment extends Fragment {
     public  static final String TAG = DetailsFragment.class.getSimpleName();
     private static final String RESUME_WINDOW = "resume window";
     private static final String RESUME_POSITION = "resume position";
-    private static final String LANDSCAPE_ORIENTATION = "orientation";
     private static final String LAST_VIDEO = "last video";
 
     private long resumePosition;
@@ -79,8 +79,13 @@ public class DetailsFragment extends Fragment {
         }
 
         Bundle args = getArguments();
+
+        assert args != null;
+
         String stepsKey = getString(R.string.STEP_EXTRA);
         String recipeName = args.getString(RecipeDetailsFragment.RECIPE_NAME);
+
+        assert getActivity() != null;
 
         getActivity().setTitle(recipeName);
 
@@ -119,6 +124,12 @@ public class DetailsFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
+    }
+
+    @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
@@ -135,7 +146,7 @@ public class DetailsFragment extends Fragment {
 
     private void setFullScreen() {
         hideButtonLayoutAndDetails();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        getSupportActionBar().hide();
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) fragmentDetailsBinding.videoViewDetails.getLayoutParams();
         marginLayoutParams.setMargins(0, 0, 0, 0);
         fragmentDetailsBinding.videoViewDetails.setLayoutParams(marginLayoutParams);
@@ -144,9 +155,10 @@ public class DetailsFragment extends Fragment {
     private void exitFullScreen() {
         showButtonLayoutAndDetails();
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        getSupportActionBar().show();
+
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) fragmentDetailsBinding.videoViewDetails.getLayoutParams();
-        
+
         float horizontal_dps = getResources().getDimension(R.dimen.margin_standard_size_horizontal);
         float vertical_dps = getResources().getDimension(R.dimen.margin_standard_size_vertical);
         int horizontal_pixels = convertToPixels(horizontal_dps);
@@ -167,14 +179,11 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        int orientation = getResources().getConfiguration().orientation;
-        boolean orientationLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         if(exoPlayer != null) {
             outState.putInt(LAST_VIDEO, lastVideo);
             outState.putLong(RESUME_POSITION, exoPlayer.getContentPosition());
             outState.putInt(RESUME_WINDOW, exoPlayer.getCurrentWindowIndex());
-            outState.putBoolean(LANDSCAPE_ORIENTATION, orientationLandscape);
         }
     }
 
@@ -251,7 +260,7 @@ public class DetailsFragment extends Fragment {
         fragmentDetailsBinding.videoViewDetails.setVisibility(View.VISIBLE);
     }
 
-    public void releasePlayer() {
+    private void releasePlayer() {
         if(exoPlayer != null) {
             exoPlayer.stop(true);
             exoPlayer.release();
@@ -265,12 +274,7 @@ public class DetailsFragment extends Fragment {
         Button nextBtn = fragmentDetailsBinding.btnNextStep;
 
         nextBtn.setVisibility(View.VISIBLE);
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeStep(newPosition);
-            }
-        });
+        nextBtn.setOnClickListener(v -> changeStep(newPosition));
     }
 
     private void changeStep(int newPosition) {
@@ -287,12 +291,7 @@ public class DetailsFragment extends Fragment {
         Button prevBtn = fragmentDetailsBinding.btnPreviousStep;
 
         prevBtn.setVisibility(View.VISIBLE);
-        prevBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeStep(newPosition);
-            }
-        });
+        prevBtn.setOnClickListener(v -> changeStep(newPosition));
     }
 
     private void hideVideo() {
@@ -336,9 +335,7 @@ public class DetailsFragment extends Fragment {
     }
 
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        releasePlayer();
+    private ActionBar getSupportActionBar() {
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
 }
