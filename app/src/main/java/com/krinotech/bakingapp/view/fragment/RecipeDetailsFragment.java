@@ -53,6 +53,8 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
         }
         recyclerView = rootView.findViewById(R.id.rv_recipe_details);
 
+        initRecyclerView(rootView.getContext());
+
         DetailsViewModelFactory detailsViewModelFactory = InjectorUtils.provideDetailsViewModelFactory(getContext(), recipeId);
 
         DetailsViewModel detailsViewModel = ViewModelProviders.of(this, detailsViewModelFactory).get(DetailsViewModel.class);
@@ -61,7 +63,6 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
             @Override
             public void onChanged(RecipeDetails recipeDetails) {
                 getActivity().setTitle(recipeDetails.recipe.getName());
-                initRecyclerView(rootView.getContext());
                 detailsAdapter.setSteps(recipeDetails);
             }
         });
