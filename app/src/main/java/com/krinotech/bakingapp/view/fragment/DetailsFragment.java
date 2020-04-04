@@ -12,10 +12,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import android.transition.TransitionManager;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 
 import com.google.android.exoplayer2.C;
@@ -50,6 +61,8 @@ public class DetailsFragment extends Fragment {
     private long resumePosition;
     private int resumeWindow;
     private int lastVideo = -1;
+    private int shortAnimationDefault;
+
 
     private FragmentDetailsBinding fragmentDetailsBinding;
     private List<Step> steps;
@@ -72,6 +85,11 @@ public class DetailsFragment extends Fragment {
         fragmentDetailsBinding = DataBindingUtil
                 .inflate(inflater, R.layout.fragment_details, container, false);
 
+        shortAnimationDefault = getResources()
+                .getInteger(android.R.integer.config_shortAnimTime);
+        if(exoPlayer != null) {
+            Log.d(TAG, "onCreateView: Not null");
+        }
         if(savedInstanceState != null) {
             lastVideo = savedInstanceState.getInt(LAST_VIDEO);
             resumeWindow = savedInstanceState.getInt(RESUME_WINDOW);
@@ -187,6 +205,13 @@ public class DetailsFragment extends Fragment {
         }
     }
 
+    private AlphaAnimation animator() {
+        AlphaAnimation anim = new AlphaAnimation(1.0f, 0.0f);
+        anim.setDuration(shortAnimationDefault);
+        anim.setRepeatCount(1);
+        anim.setRepeatMode(Animation.REVERSE);
+        return anim;
+    }
     private void setViews(int position) {
         String text = steps.get(position).getDescription();
         String url = steps.get(position).getVideoURL();
@@ -274,7 +299,10 @@ public class DetailsFragment extends Fragment {
         Button nextBtn = fragmentDetailsBinding.btnNextStep;
 
         nextBtn.setVisibility(View.VISIBLE);
-        nextBtn.setOnClickListener(v -> changeStep(newPosition));
+        nextBtn.setOnClickListener(v -> {
+            changeStep(newPosition);
+            startAnimations(fromLeft());
+        });
     }
 
     private void changeStep(int newPosition) {
@@ -285,13 +313,40 @@ public class DetailsFragment extends Fragment {
         setViews(newPosition);
     }
 
+    private void startAnimations(Animation animation) {
+//        AlphaAnimation alphaAnimation = animator();
+//        fragmentDetailsBinding.videoViewDetails.startAnimation(alphaAnimation);
+//        fragmentDetailsBinding.tvStepDetails.startAnimation(alphaAnimation);
+//        fragmentDetailsBinding.btnNextStep.startAnimation(alphaAnimation);
+//        fragmentDetailsBinding.btnPreviousStep.startAnimation(alphaAnimation);
+//        fragmentDetailsBinding.tvStepDetails.setAnimation(animation);
+//        fragmentDetailsBinding.videoViewDetails.setAnimation(animation);
+    }
+
+    public Animation fromLeft() {
+        Animation inFromLeft = new TranslateAnimation( Animation.RELATIVE_TO_PARENT, -1.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        inFromLeft.setDuration(300);
+        inFromLeft.setInterpolator(new AccelerateInterpolator());
+        return inFromLeft;
+    }
+
+    private Animation fromRight() {
+        Animation inFromRight = new TranslateAnimation( Animation.RELATIVE_TO_PARENT, +1.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
+        inFromRight.setDuration(500);
+        inFromRight.setInterpolator(new AccelerateInterpolator());
+        return inFromRight;
+    }
+
     private void activatePrevBtn(int position) {
         final int newPosition = position - 1;
 
         Button prevBtn = fragmentDetailsBinding.btnPreviousStep;
 
         prevBtn.setVisibility(View.VISIBLE);
-        prevBtn.setOnClickListener(v -> changeStep(newPosition));
+        prevBtn.setOnClickListener(v -> {
+            changeStep(newPosition);
+            startAnimations(fromRight());
+        });
     }
 
     private void hideVideo() {

@@ -22,6 +22,7 @@ import com.krinotech.bakingapp.model.RecipeDetails;
 import com.krinotech.bakingapp.model.Step;
 import com.krinotech.bakingapp.recyclerview.DetailsAdapter;
 import com.krinotech.bakingapp.util.InjectorUtils;
+import com.krinotech.bakingapp.view.MainActivity;
 import com.krinotech.bakingapp.viewmodel.DetailsViewModel;
 import com.krinotech.bakingapp.viewmodel.DetailsViewModelFactory;
 
@@ -105,11 +106,7 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
         Fragment fragment = new DetailsFragment();
         fragment.setArguments(bundle);
 
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fl_recipes_container, fragment, DetailsFragment.TAG)
-                .addToBackStack(null)
-                .commit();
+        launchFragment(fragment);
     }
 
     @Override
@@ -121,10 +118,22 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
         Fragment fragment = new DetailsFragment();
         fragment.setArguments(bundle);
 
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fl_recipes_container, fragment, DetailsFragment.TAG)
-                .addToBackStack(null)
-                .commit();
+        launchFragment(fragment);
+    }
+
+    private void launchFragment(Fragment fragment) {
+        if (((MainActivity) getActivity()).isTablet()) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fl_details_container, fragment, DetailsFragment.TAG)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fl_recipes_container, fragment, DetailsFragment.TAG)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }

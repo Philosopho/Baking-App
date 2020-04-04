@@ -74,7 +74,7 @@ public class RecipeRepository {
        executor.diskIO().execute(() -> {
             boolean shouldFetchNewRecipes = preferences.shouldFetchNewRecipes();
 
-            if(!shouldFetchNewRecipes) {
+            if(shouldFetchNewRecipes) {
                 Log.d(TAG, "refreshRecipes");
                 try {
                     Response<List<Recipe>> response = bakingApi.listRecipes().execute();

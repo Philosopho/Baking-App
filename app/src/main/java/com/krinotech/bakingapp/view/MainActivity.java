@@ -30,12 +30,15 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private FragmentManager fragmentManager;
+    private boolean isTablet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         fragmentManager = getSupportFragmentManager();
+
+        isTablet = getResources().getBoolean(R.bool.isTablet);
 
         setContentView(R.layout.activity_main);
         setTitle(getString(R.string.main_activity_title));
@@ -71,6 +74,10 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean fragmentExists(String tag) {
         return fragmentManager.findFragmentByTag(tag) != null;
+    }
+
+    public boolean isTablet() {
+        return isTablet;
     }
 }
 

@@ -2,6 +2,7 @@ package com.krinotech.bakingapp.view.fragment;
 
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -80,13 +82,25 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
     private void initRecyclerView(Context context) {
         recipeAdapter = new RecipeAdapter(this);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
-                context, RecyclerView.VERTICAL, false);
+        LinearLayoutManager linearLayoutManager;
+        if(((MainActivity) getActivity()).isTablet()) {
+            linearLayoutManager = new GridLayoutManager(
+                    context, 4, RecyclerView.VERTICAL, false);
+        }
+        else {
+            linearLayoutManager = new LinearLayoutManager(
+                    context, RecyclerView.VERTICAL, false);
+        }
 
         recyclerView.setLayoutManager(linearLayoutManager);
 
         recyclerView.setAdapter(recipeAdapter);
 
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override

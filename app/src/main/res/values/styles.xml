@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -19,7 +19,7 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:padding">@dimen/padding_standard_size</item>
         <item name="android:gravity">center</item>
-        <item name="android:background">@drawable/card_gradient</item>
+        <item name="android:background">@drawable/touch_selector</item>
     </style>
 
     <style name="step" parent="recipe">
@@ -32,6 +32,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/text_standard_size</item>
+        <item name="android:background">@drawable/card_primary_gradient</item>
     </style>
 
     <style name="ingredients" parent="@style/recipe">
@@ -54,8 +55,8 @@
         <item name="android:layout_marginBottom">@dimen/margin_standard_size_vertical</item>
         <item name="android:padding">@dimen/padding_standard_size</item>
         <item name="android:textSize">@dimen/text_standard_size_btn</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:background">@color/colorAccent</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/touch_selector</item>
     </style>
 
 </resources>

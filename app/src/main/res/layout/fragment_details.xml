@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
         <LinearLayout
             style="@style/linear_layout_vertical_match"
+            android:animateLayoutChanges="true"
             >
 
             <com.google.android.exoplayer2.ui.PlayerView
@@ -35,6 +36,7 @@
                 android:layout_height="0dp"
                 android:orientation="horizontal"
                 android:layout_weight="1"
+                android:animateLayoutChanges="true"
                 >
 
                 <Button
