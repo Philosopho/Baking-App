@@ -80,9 +80,7 @@ public class DetailsFragment extends BaseFragment {
 
         shortAnimationDefault = getResources()
                 .getInteger(android.R.integer.config_shortAnimTime);
-        if(exoPlayer != null) {
-            Log.d(TAG, "onCreateView: Not null");
-        }
+        
         if(savedInstanceState != null) {
             lastVideo = savedInstanceState.getInt(LAST_VIDEO);
             resumeWindow = savedInstanceState.getInt(RESUME_WINDOW);
@@ -144,8 +142,10 @@ public class DetailsFragment extends BaseFragment {
     private void setFullScreen() {
         hideButtonLayoutAndDetails();
         getSupportActionBar().hide();
+
         ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) fragmentDetailsBinding.videoViewDetails.getLayoutParams();
         marginLayoutParams.setMargins(0, 0, 0, 0);
+
         fragmentDetailsBinding.videoViewDetails.setLayoutParams(marginLayoutParams);
     }
 
@@ -266,8 +266,10 @@ public class DetailsFragment extends BaseFragment {
 
     private void changeStep(int newPosition) {
         lastVideo = newPosition;
+
         resumeWindow = C.INDEX_UNSET;
         resumePosition = C.INDEX_UNSET;
+
         setViews(newPosition);
     }
 
@@ -339,6 +341,7 @@ public class DetailsFragment extends BaseFragment {
     private void showIngredients(Bundle args) {
         hideVideosAndButtons();
         String text = args.getString(getString(R.string.INGREDIENTS_EXTRA));
+
         ViewGroup.LayoutParams layoutParams = fragmentDetailsBinding.tvStepDetails.getLayoutParams();
         layoutParams.height = MATCH_PARENT;
 
