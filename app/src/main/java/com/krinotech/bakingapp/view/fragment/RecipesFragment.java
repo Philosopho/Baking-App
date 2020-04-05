@@ -8,7 +8,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,8 +27,6 @@ import com.krinotech.bakingapp.util.InjectorUtils;
 import com.krinotech.bakingapp.view.MainActivity;
 import com.krinotech.bakingapp.viewmodel.MainViewModel;
 import com.krinotech.bakingapp.viewmodel.MainViewModelFactory;
-
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.

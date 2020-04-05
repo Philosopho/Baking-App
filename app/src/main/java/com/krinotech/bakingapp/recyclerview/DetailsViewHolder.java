@@ -1,7 +1,5 @@
 package com.krinotech.bakingapp.recyclerview;
 
-import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 

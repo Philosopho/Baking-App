@@ -1,10 +1,6 @@
 package com.krinotech.bakingapp;
 
 public class PresenterLogic {
-    private static int PORTRAIT_ONE = 0;
-    private static int PORTRAIT_TWO = 180;
-    private static int LANDSCAPE_ONE = 90;
-    private static int LANDSCAPE_TWO = 270;
 
 
     public static boolean prevExists(int position) {
