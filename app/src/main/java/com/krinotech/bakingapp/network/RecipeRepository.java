@@ -21,15 +21,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class RecipeRepository {
-    public static final String BAKING_API_BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
     public static final String TAG = RecipeRepository.class.getSimpleName();
     private static final Object LOCK = new Object();
     private static RecipeRepository instance;
 
-    private final BakingApi bakingApi = new Retrofit.Builder()
-            .baseUrl(BAKING_API_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build().create(BakingApi.class);
+    private BakingApi bakingApi;
 
 
     private RecipeDao recipeDao;
@@ -38,18 +34,21 @@ public class RecipeRepository {
 
     private AppThreadExecutor executor;
 
-    private RecipeRepository(RecipeDao recipeDao, Preferences preferences, AppThreadExecutor executor) {
+    private RecipeRepository(RecipeDao recipeDao, Preferences preferences,
+                             AppThreadExecutor executor, BakingApi bakingApi) {
         this.recipeDao = recipeDao;
         this.preferences = preferences;
         this.executor = executor;
+        this.bakingApi = bakingApi;
     }
 
 
-    public static RecipeRepository getInstance(RecipeDao recipeDao, Preferences preferences, AppThreadExecutor executor) {
+    public static RecipeRepository getInstance(RecipeDao recipeDao, Preferences preferences,
+                                               AppThreadExecutor executor, BakingApi bakingApi) {
         if(instance == null) {
             synchronized (LOCK) {
                 Log.d(TAG, "getInstance Repository");
-                instance = new RecipeRepository(recipeDao, preferences, executor);
+                instance = new RecipeRepository(recipeDao, preferences, executor, bakingApi);
             }
         }
         return instance;

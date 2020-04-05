@@ -52,7 +52,6 @@ public class DetailsFragment extends BaseFragment {
     private long resumePosition;
     private int resumeWindow;
     private int lastVideo = -1;
-    private int shortAnimationDefault;
 
 
     private FragmentDetailsBinding fragmentDetailsBinding;
@@ -78,9 +77,7 @@ public class DetailsFragment extends BaseFragment {
         fragmentDetailsBinding = DataBindingUtil
                 .inflate(inflater, R.layout.fragment_details, container, false);
 
-        shortAnimationDefault = getResources()
-                .getInteger(android.R.integer.config_shortAnimTime);
-        
+
         if(savedInstanceState != null) {
             lastVideo = savedInstanceState.getInt(LAST_VIDEO);
             resumeWindow = savedInstanceState.getInt(RESUME_WINDOW);
