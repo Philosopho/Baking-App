@@ -269,6 +269,18 @@ public class DetailsFragment extends Fragment {
             seekToPosition();
             exoPlayer.setPlayWhenReady(true);
         }
+        else {
+            Log.d(TAG, "activateVideo: Not null");
+            String userAgent = Util.getUserAgent(getContext(), getString(R.string.app_name));
+            exoPlayer.stop(true);
+            MediaSource mediaSource = new ProgressiveMediaSource.Factory(
+                    new DefaultDataSourceFactory(getContext(), userAgent)
+            ).createMediaSource(chosenUrl);
+
+            exoPlayer.prepare(mediaSource);
+            seekToPosition();
+            exoPlayer.setPlayWhenReady(true);
+        }
     }
 
     private void seekToPosition() {
@@ -301,40 +313,14 @@ public class DetailsFragment extends Fragment {
         nextBtn.setVisibility(View.VISIBLE);
         nextBtn.setOnClickListener(v -> {
             changeStep(newPosition);
-            startAnimations(fromLeft());
         });
     }
 
     private void changeStep(int newPosition) {
-        releasePlayer();
         lastVideo = newPosition;
         resumeWindow = C.INDEX_UNSET;
         resumePosition = C.INDEX_UNSET;
         setViews(newPosition);
-    }
-
-    private void startAnimations(Animation animation) {
-//        AlphaAnimation alphaAnimation = animator();
-//        fragmentDetailsBinding.videoViewDetails.startAnimation(alphaAnimation);
-//        fragmentDetailsBinding.tvStepDetails.startAnimation(alphaAnimation);
-//        fragmentDetailsBinding.btnNextStep.startAnimation(alphaAnimation);
-//        fragmentDetailsBinding.btnPreviousStep.startAnimation(alphaAnimation);
-//        fragmentDetailsBinding.tvStepDetails.setAnimation(animation);
-//        fragmentDetailsBinding.videoViewDetails.setAnimation(animation);
-    }
-
-    public Animation fromLeft() {
-        Animation inFromLeft = new TranslateAnimation( Animation.RELATIVE_TO_PARENT, -1.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-        inFromLeft.setDuration(300);
-        inFromLeft.setInterpolator(new AccelerateInterpolator());
-        return inFromLeft;
-    }
-
-    private Animation fromRight() {
-        Animation inFromRight = new TranslateAnimation( Animation.RELATIVE_TO_PARENT, +1.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-        inFromRight.setDuration(500);
-        inFromRight.setInterpolator(new AccelerateInterpolator());
-        return inFromRight;
     }
 
     private void activatePrevBtn(int position) {
@@ -345,7 +331,6 @@ public class DetailsFragment extends Fragment {
         prevBtn.setVisibility(View.VISIBLE);
         prevBtn.setOnClickListener(v -> {
             changeStep(newPosition);
-            startAnimations(fromRight());
         });
     }
 

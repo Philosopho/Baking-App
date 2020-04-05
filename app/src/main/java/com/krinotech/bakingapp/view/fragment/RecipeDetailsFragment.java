@@ -123,11 +123,19 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
 
     private void launchFragment(Fragment fragment) {
         if (((MainActivity) getActivity()).isTablet()) {
-            getFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fl_details_container, fragment, DetailsFragment.TAG)
-                    .addToBackStack(null)
-                    .commit();
+            showSecondPane();
+            if(getActivity().getSupportFragmentManager().findFragmentByTag(DetailsFragment.TAG) == null) {
+                getFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.fl_details_container, fragment, DetailsFragment.TAG)
+                        .commit();
+            }
+            else {
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fl_details_container, fragment, DetailsFragment.TAG)
+                        .commit();
+            }
         } else {
             getFragmentManager()
                     .beginTransaction()
@@ -135,5 +143,11 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
                     .addToBackStack(null)
                     .commit();
         }
+    }
+
+    private void showSecondPane() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.getSecondPane().setVisibility(View.VISIBLE);
+        mainActivity.getDivider().setVisibility(View.VISIBLE);
     }
 }
