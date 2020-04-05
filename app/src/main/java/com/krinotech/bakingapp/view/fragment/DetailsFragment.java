@@ -34,6 +34,7 @@ import com.krinotech.bakingapp.PresenterLogic;
 import com.krinotech.bakingapp.R;
 import com.krinotech.bakingapp.databinding.FragmentDetailsBinding;
 import com.krinotech.bakingapp.model.Step;
+import com.krinotech.bakingapp.view.MainActivity;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailsFragment extends Fragment {
+public class DetailsFragment extends BaseFragment {
     public  static final String TAG = DetailsFragment.class.getSimpleName();
     private static final String RESUME_WINDOW = "resume window";
     private static final String RESUME_POSITION = "resume position";
@@ -71,6 +72,8 @@ public class DetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
         // Inflate the layout for this fragment
         fragmentDetailsBinding = DataBindingUtil
                 .inflate(inflater, R.layout.fragment_details, container, false);
@@ -98,32 +101,12 @@ public class DetailsFragment extends Fragment {
         getActivity().setTitle(recipeName);
 
         if(args.containsKey(stepsKey)) {
-            String positionKey = getString(R.string.POSITION_EXTRA);
-            int position;
-
-            if(lastVideo != -1) {
-                position = lastVideo;
-            }
-            else {
-                position = args.getInt(positionKey);
-                lastVideo = position;
-            }
-            steps = args.getParcelableArrayList(stepsKey);
-
-            setViews(position);
-
-            return fragmentDetailsBinding.getRoot();
+            showStepDetails(args, stepsKey);
         }
         else {
-            hideVideosAndButtons();
-            String text = args.getString(getString(R.string.INGREDIENTS_EXTRA));
-            ViewGroup.LayoutParams layoutParams = fragmentDetailsBinding.tvStepDetails.getLayoutParams();
-            layoutParams.height = MATCH_PARENT;
-
-            fragmentDetailsBinding.tvStepDetails.setLayoutParams(layoutParams);
-            setDetails(text);
-            return fragmentDetailsBinding.getRoot();
+            showIngredients(args);
         }
+        return fragmentDetailsBinding.getRoot();
     }
 
     @Override
@@ -144,6 +127,17 @@ public class DetailsFragment extends Fragment {
             if(exoPlayer != null) {
                 exitFullScreen();
             }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(exoPlayer != null) {
+            outState.putInt(LAST_VIDEO, lastVideo);
+            outState.putLong(RESUME_POSITION, exoPlayer.getContentPosition());
+            outState.putInt(RESUME_WINDOW, exoPlayer.getCurrentWindowIndex());
         }
     }
 
@@ -179,17 +173,6 @@ public class DetailsFragment extends Fragment {
         );
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        if(exoPlayer != null) {
-            outState.putInt(LAST_VIDEO, lastVideo);
-            outState.putLong(RESUME_POSITION, exoPlayer.getContentPosition());
-            outState.putInt(RESUME_WINDOW, exoPlayer.getCurrentWindowIndex());
-        }
-    }
-
     private void setViews(int position) {
         String text = steps.get(position).getDescription();
         String url = steps.get(position).getVideoURL();
@@ -216,9 +199,9 @@ public class DetailsFragment extends Fragment {
                             PresenterLogic.getUri(url, thumbnailUrl)
                     );
             activateVideo(chosenUrl);
-            if(getResources()
-                    .getConfiguration()
-                    .orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if(isLandscape() &&
+                    !isTablet()) {
+
                 setFullScreen();
             }
         }
@@ -337,8 +320,29 @@ public class DetailsFragment extends Fragment {
         fragmentDetailsBinding.tvStepDetails.setVisibility(View.VISIBLE);
     }
 
+    private void showStepDetails(Bundle args, String stepsKey) {
+        String positionKey = getString(R.string.POSITION_EXTRA);
+        int position;
 
-    private ActionBar getSupportActionBar() {
-        return ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if(lastVideo != -1) {
+            position = lastVideo;
+        }
+        else {
+            position = args.getInt(positionKey);
+            lastVideo = position;
+        }
+        steps = args.getParcelableArrayList(stepsKey);
+
+        setViews(position);
+    }
+
+    private void showIngredients(Bundle args) {
+        hideVideosAndButtons();
+        String text = args.getString(getString(R.string.INGREDIENTS_EXTRA));
+        ViewGroup.LayoutParams layoutParams = fragmentDetailsBinding.tvStepDetails.getLayoutParams();
+        layoutParams.height = MATCH_PARENT;
+
+        fragmentDetailsBinding.tvStepDetails.setLayoutParams(layoutParams);
+        setDetails(text);
     }
 }

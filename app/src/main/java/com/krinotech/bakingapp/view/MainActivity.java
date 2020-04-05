@@ -5,11 +5,14 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.krinotech.bakingapp.R;
 import com.krinotech.bakingapp.view.fragment.RecipesFragment;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -17,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isTablet;
     private View divider;
     private FrameLayout secondPane;
+    private FrameLayout firstPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         if(isTablet) {
             divider = findViewById(R.id.v_divider);
             secondPane = findViewById(R.id.fl_details_container);
+            firstPane = findViewById(R.id.fl_recipes_container);
             hideSecondPane();
         }
 
@@ -86,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void hideSecondPane() {
         if(isTablet) {
+            ViewGroup.LayoutParams layoutParams = firstPane.getLayoutParams();
+            layoutParams.width = MATCH_PARENT;
+            firstPane.setLayoutParams(layoutParams);
             secondPane.setVisibility(View.GONE);
             divider.setVisibility(View.GONE);
         }
@@ -103,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         return secondPane;
     }
 
+    public FrameLayout getFirstPane() { return firstPane; }
 
     public View getDivider() {
         return divider;

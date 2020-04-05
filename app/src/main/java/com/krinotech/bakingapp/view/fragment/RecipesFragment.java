@@ -31,7 +31,7 @@ import com.krinotech.bakingapp.viewmodel.MainViewModelFactory;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemClickListener {
+public class RecipesFragment extends BaseFragment implements RecipeAdapter.OnItemClickListener {
     public static final String TAG = RecipesFragment.class.getSimpleName();
 
     private RecyclerView recyclerView;
@@ -50,6 +50,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
 
         View rootView = inflater.inflate(R.layout.fragment_recipe, container, false);
 
@@ -77,9 +78,9 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
         recipeAdapter = new RecipeAdapter(this);
 
         LinearLayoutManager linearLayoutManager;
-        if(((MainActivity) getActivity()).isTablet()) {
+        if(isTablet()) {
             linearLayoutManager = new GridLayoutManager(
-                    context, 4, RecyclerView.VERTICAL, false);
+                    context, 3, RecyclerView.VERTICAL, false);
         }
         else {
             linearLayoutManager = new LinearLayoutManager(
@@ -93,11 +94,6 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
     }
 
     @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
     public void clickRecipe(Recipe recipe) {
         Fragment fragment = new RecipeDetailsFragment();
         Log.d(TAG, "clickRecipe: " + recipe.getId());
@@ -106,11 +102,7 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
 
         fragment.setArguments(bundle);
 
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fl_recipes_container, fragment, RecipeDetailsFragment.TAG)
-                .addToBackStack(null)
-                .commit();
+        replaceAndAddToBackStack(R.id.fl_recipes_container, fragment, RecipeDetailsFragment.TAG);
     }
 
     private void showProgressBar() {

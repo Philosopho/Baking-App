@@ -27,7 +27,9 @@ import com.krinotech.bakingapp.viewmodel.DetailsViewModelFactory;
 
 import java.util.ArrayList;
 
-public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.OnClickRecipeDetails {
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
+public class RecipeDetailsFragment extends BaseFragment implements DetailsAdapter.OnClickRecipeDetails {
     public static final String TAG = RecipeDetailsFragment.class.getSimpleName();
     public static final String RECIPE_NAME = "recipe name";
 
@@ -42,6 +44,7 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
 
         final View rootView = inflater.inflate(R.layout.fragment_recipe_details, container, false);
 
@@ -117,31 +120,24 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
     }
 
     private void launchFragment(Fragment fragment) {
-        if (((MainActivity) getActivity()).isTablet()) {
+        if (isTablet()) {
             showSecondPane();
-            if(getActivity().getSupportFragmentManager().findFragmentByTag(DetailsFragment.TAG) == null) {
-                getFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.fl_details_container, fragment, DetailsFragment.TAG)
-                        .commit();
+            if(fragmentExists(DetailsFragment.TAG)) {
+                replaceFragment(R.id.fl_details_container, fragment, DetailsFragment.TAG);
             }
             else {
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fl_details_container, fragment, DetailsFragment.TAG)
-                        .commit();
+                addFragment(R.id.fl_details_container, fragment, DetailsFragment.TAG);
             }
         } else {
-            getFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fl_recipes_container, fragment, DetailsFragment.TAG)
-                    .addToBackStack(null)
-                    .commit();
+            replaceAndAddToBackStack(R.id.fl_recipes_container, fragment, DetailsFragment.TAG);
         }
     }
 
     private void showSecondPane() {
         MainActivity mainActivity = (MainActivity) getActivity();
+        ViewGroup.LayoutParams layoutParams = mainActivity.getFirstPane().getLayoutParams();
+        layoutParams.width = WRAP_CONTENT;
+        mainActivity.getFirstPane().setLayoutParams(layoutParams);
         mainActivity.getSecondPane().setVisibility(View.VISIBLE);
         mainActivity.getDivider().setVisibility(View.VISIBLE);
     }
