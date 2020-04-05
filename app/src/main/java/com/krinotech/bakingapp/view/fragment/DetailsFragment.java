@@ -12,21 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
-import android.transition.TransitionManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 
 import com.google.android.exoplayer2.C;
@@ -137,11 +127,6 @@ public class DetailsFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         releasePlayer();
@@ -205,13 +190,6 @@ public class DetailsFragment extends Fragment {
         }
     }
 
-    private AlphaAnimation animator() {
-        AlphaAnimation anim = new AlphaAnimation(1.0f, 0.0f);
-        anim.setDuration(shortAnimationDefault);
-        anim.setRepeatCount(1);
-        anim.setRepeatMode(Animation.REVERSE);
-        return anim;
-    }
     private void setViews(int position) {
         String text = steps.get(position).getDescription();
         String url = steps.get(position).getVideoURL();
@@ -248,6 +226,12 @@ public class DetailsFragment extends Fragment {
     }
 
     private void activateVideo(Uri chosenUrl) {
+        String userAgent = Util.getUserAgent(getContext(), getString(R.string.app_name));
+
+        MediaSource mediaSource = new ProgressiveMediaSource.Factory(
+                new DefaultDataSourceFactory(getContext(), userAgent)
+        ).createMediaSource(chosenUrl);
+
         if(exoPlayer == null) {
             TrackSelector trackSelector = new DefaultTrackSelector(getContext());
             LoadControl loadControl = new DefaultLoadControl();
@@ -259,28 +243,11 @@ public class DetailsFragment extends Fragment {
                     .build();
 
             fragmentDetailsBinding.videoViewDetails.setPlayer(exoPlayer);
-            String userAgent = Util.getUserAgent(getContext(), getString(R.string.app_name));
-
-            MediaSource mediaSource = new ProgressiveMediaSource.Factory(
-                    new DefaultDataSourceFactory(getContext(), userAgent)
-            ).createMediaSource(chosenUrl);
-
-            exoPlayer.prepare(mediaSource);
-            seekToPosition();
-            exoPlayer.setPlayWhenReady(true);
         }
-        else {
-            Log.d(TAG, "activateVideo: Not null");
-            String userAgent = Util.getUserAgent(getContext(), getString(R.string.app_name));
-            exoPlayer.stop(true);
-            MediaSource mediaSource = new ProgressiveMediaSource.Factory(
-                    new DefaultDataSourceFactory(getContext(), userAgent)
-            ).createMediaSource(chosenUrl);
 
-            exoPlayer.prepare(mediaSource);
-            seekToPosition();
-            exoPlayer.setPlayWhenReady(true);
-        }
+        exoPlayer.prepare(mediaSource);
+        seekToPosition();
+        exoPlayer.setPlayWhenReady(true);
     }
 
     private void seekToPosition() {
@@ -311,9 +278,7 @@ public class DetailsFragment extends Fragment {
         Button nextBtn = fragmentDetailsBinding.btnNextStep;
 
         nextBtn.setVisibility(View.VISIBLE);
-        nextBtn.setOnClickListener(v -> {
-            changeStep(newPosition);
-        });
+        nextBtn.setOnClickListener(v -> changeStep(newPosition));
     }
 
     private void changeStep(int newPosition) {
@@ -329,9 +294,7 @@ public class DetailsFragment extends Fragment {
         Button prevBtn = fragmentDetailsBinding.btnPreviousStep;
 
         prevBtn.setVisibility(View.VISIBLE);
-        prevBtn.setOnClickListener(v -> {
-            changeStep(newPosition);
-        });
+        prevBtn.setOnClickListener(v -> changeStep(newPosition));
     }
 
     private void hideVideo() {

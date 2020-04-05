@@ -1,33 +1,15 @@
 package com.krinotech.bakingapp.view;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 
 import com.krinotech.bakingapp.R;
-import com.krinotech.bakingapp.model.Recipe;
-import com.krinotech.bakingapp.model.RecipeDetails;
-import com.krinotech.bakingapp.recyclerview.RecipeAdapter;
-import com.krinotech.bakingapp.util.InjectorUtils;
-import com.krinotech.bakingapp.view.fragment.DetailsFragment;
-import com.krinotech.bakingapp.view.fragment.RecipeDetailsFragment;
 import com.krinotech.bakingapp.view.fragment.RecipesFragment;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
-import com.krinotech.bakingapp.viewmodel.MainViewModel;
-import com.krinotech.bakingapp.viewmodel.MainViewModelFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -63,20 +45,15 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-
-            @Override
-            public void onBackStackChanged() {
-                int stackHeight = getSupportFragmentManager().getBackStackEntryCount();
-                if (stackHeight > 1) { // if we have something on the stack (doesn't include the current shown fragment)
-                    getSupportActionBar().setHomeButtonEnabled(true);
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                } else {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                    getSupportActionBar().setHomeButtonEnabled(false);
-                }
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            int stackHeight = getSupportFragmentManager().getBackStackEntryCount();
+            if (stackHeight > 1) { // if we have something on the stack (doesn't include the current shown fragment)
+                getSupportActionBar().setHomeButtonEnabled(true);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            } else {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                getSupportActionBar().setHomeButtonEnabled(false);
             }
-
         });
 
         new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());

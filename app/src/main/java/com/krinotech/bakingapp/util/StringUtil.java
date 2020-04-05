@@ -1,7 +1,5 @@
 package com.krinotech.bakingapp.util;
 
-import android.util.Log;
-
 import com.krinotech.bakingapp.model.Ingredient;
 
 import java.util.List;

@@ -1,7 +1,6 @@
 package com.krinotech.bakingapp.recyclerview;
 
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,11 +21,6 @@ class RecipeViewHolder extends RecyclerView.ViewHolder {
     public void bind(Recipe recipe, RecipeAdapter.OnItemClickListener onItemClickListener) {
         textView.setText(recipe.getName());
 
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClickListener.clickRecipe(recipe);
-            }
-        });
+        textView.setOnClickListener(v -> onItemClickListener.clickRecipe(recipe));
     }
 }

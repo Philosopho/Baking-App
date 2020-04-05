@@ -66,12 +66,9 @@ public class RecipesFragment extends Fragment implements RecipeAdapter.OnItemCli
         MainViewModelFactory mainViewModelFactory = InjectorUtils.provideMainActivityViewModelFactory(getActivity().getApplicationContext());
         MainViewModel mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(MainViewModel.class);
 
-        mainViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
-            @Override
-            public void onChanged(List<Recipe> recipes) {
-                hideProgressBar();
-                recipeAdapter.setRecipes(recipes);
-            }
+        mainViewModel.getRecipes().observe(this, recipes -> {
+            hideProgressBar();
+            recipeAdapter.setRecipes(recipes);
         });
 
         new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());

@@ -59,13 +59,9 @@ public class RecipeDetailsFragment extends Fragment implements DetailsAdapter.On
         DetailsViewModelFactory detailsViewModelFactory = InjectorUtils.provideDetailsViewModelFactory(getContext(), recipeId);
 
         DetailsViewModel detailsViewModel = ViewModelProviders.of(this, detailsViewModelFactory).get(DetailsViewModel.class);
-        detailsViewModel.getRecipeDetails().observe(this, new Observer<RecipeDetails>() {
-
-            @Override
-            public void onChanged(RecipeDetails recipeDetails) {
-                getActivity().setTitle(recipeDetails.recipe.getName());
-                detailsAdapter.setSteps(recipeDetails);
-            }
+        detailsViewModel.getRecipeDetails().observe(this, recipeDetails -> {
+            getActivity().setTitle(recipeDetails.recipe.getName());
+            detailsAdapter.setSteps(recipeDetails);
         });
 
         return rootView;

@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.krinotech.bakingapp.model.Recipe;
-import com.krinotech.bakingapp.model.RecipeDetails;
 import com.krinotech.bakingapp.network.RecipeRepository;
 
 import java.util.List;
