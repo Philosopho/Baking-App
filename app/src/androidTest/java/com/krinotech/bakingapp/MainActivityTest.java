@@ -46,7 +46,7 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
+public class MainActivityTest {
     private static final String NUTELLA_PIE = "Nutella Pie";
     private static final String BROWNIES = "Brownies";
     private static final String YELLOW_CAKE = "Yellow Cake";
