@@ -66,6 +66,16 @@ public class MainActivityTest {
 
 
     @Test
+    public void title_isDisplayed() {
+        String title = testRule
+                .getActivity()
+                .getResources()
+                .getString(R.string.main_activity_title);
+
+        onView(withText(title)).check(matches(isDisplayed()));
+    }
+
+    @Test
     public void nutellaPie_isDisplayed() {
         onView(withText(NUTELLA_PIE)).check(matches(isDisplayed()));
     }
