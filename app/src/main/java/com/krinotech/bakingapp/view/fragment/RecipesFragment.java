@@ -19,7 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.krinotech.bakingapp.BuildConfig;
 import com.krinotech.bakingapp.R;
+import com.krinotech.bakingapp.RecipesIdlingResource;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
 import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.recyclerview.RecipeAdapter;
@@ -61,7 +63,10 @@ public class RecipesFragment extends BaseFragment implements RecipeAdapter.OnIte
         initRecyclerView(getActivity());
 
         showProgressBar();
-        MainViewModelFactory mainViewModelFactory = InjectorUtils.provideMainActivityViewModelFactory(getActivity().getApplicationContext());
+        MainViewModelFactory mainViewModelFactory;
+
+        mainViewModelFactory = getMainViewModelFactory();
+
         MainViewModel mainViewModel = ViewModelProviders.of(this, mainViewModelFactory).get(MainViewModel.class);
 
         mainViewModel.getRecipes().observe(this, recipes -> {
@@ -72,6 +77,19 @@ public class RecipesFragment extends BaseFragment implements RecipeAdapter.OnIte
         new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());
 
         return rootView;
+    }
+
+    private MainViewModelFactory getMainViewModelFactory() {
+        MainViewModelFactory mainViewModelFactory;
+        if(BuildConfig.DEBUG) {
+            RecipesIdlingResource recipesIdlingResource = new RecipesIdlingResource();
+            mainViewModelFactory = InjectorUtils.provideMainActivityViewModelFactory(getActivity().getApplicationContext(), recipesIdlingResource);
+            getHostActivity().setIdlingResource(recipesIdlingResource);
+        }
+        else {
+            mainViewModelFactory = InjectorUtils.provideMainActivityViewModelFactory(getActivity().getApplicationContext());
+        }
+        return mainViewModelFactory;
     }
 
     private void initRecyclerView(Context context) {

@@ -3,9 +3,11 @@ package com.krinotech.bakingapp.network;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.test.espresso.IdlingResource;
 
 import com.krinotech.bakingapp.AppThreadExecutor;
 import com.krinotech.bakingapp.Preferences;
+import com.krinotech.bakingapp.RecipesIdlingResource;
 import com.krinotech.bakingapp.database.RecipeDao;
 import com.krinotech.bakingapp.model.Ingredient;
 import com.krinotech.bakingapp.model.Recipe;
@@ -34,6 +36,8 @@ public class RecipeRepository {
 
     private AppThreadExecutor executor;
 
+    private RecipesIdlingResource idlingResource;
+
     private RecipeRepository(RecipeDao recipeDao, Preferences preferences,
                              AppThreadExecutor executor, BakingApi bakingApi) {
         this.recipeDao = recipeDao;
@@ -54,20 +58,50 @@ public class RecipeRepository {
         return instance;
     }
 
+    private RecipeRepository(RecipeDao recipeDao, Preferences preferences,
+                             AppThreadExecutor executor, BakingApi bakingApi, RecipesIdlingResource idlingResource) {
+        this.recipeDao = recipeDao;
+        this.preferences = preferences;
+        this.executor = executor;
+        this.bakingApi = bakingApi;
+        this.idlingResource = idlingResource;
+    }
+
+
+    public static RecipeRepository getInstance(RecipeDao recipeDao, Preferences preferences,
+                                               AppThreadExecutor executor, BakingApi bakingApi, RecipesIdlingResource idlingResource) {
+        if(instance == null) {
+            synchronized (LOCK) {
+                Log.d(TAG, "getInstance Repository");
+                instance = new RecipeRepository(recipeDao, preferences, executor, bakingApi, idlingResource);
+            }
+        }
+        return instance;
+    }
+
 
     public LiveData<List<Recipe>> getRecipes() {
         refreshRecipes();
 
-        return recipeDao.loadRecipes();
+        LiveData<List<Recipe>> recipes = recipeDao.loadRecipes();
+
+        setIdlingResource(true);
+
+        return recipes;
     }
 
     public LiveData<RecipeDetails> getRecipeDetails(int id) {
         refreshRecipes();
 
-        return recipeDao.loadRecipeDetails(id);
+        LiveData<RecipeDetails> recipeDetails = recipeDao.loadRecipeDetails(id);
+
+        setIdlingResource(true);
+
+        return recipeDetails;
     }
 
     private void refreshRecipes() {
+        setIdlingResource(false);
        executor.diskIO().execute(() -> {
             boolean shouldFetchNewRecipes = preferences.shouldFetchNewRecipes();
 
@@ -105,5 +139,11 @@ public class RecipeRepository {
                 }
             }
         });
+    }
+
+    private void setIdlingResource(boolean b) {
+        if(idlingResource != null) {
+            idlingResource.setIdleState(b);
+        }
     }
 }

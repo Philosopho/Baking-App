@@ -63,4 +63,8 @@ public class BaseFragment extends Fragment {
     ActionBar getSupportActionBar() {
         return hostActivity.getSupportActionBar();
     }
+
+    MainActivity getHostActivity() {
+        return hostActivity;
+    }
 }

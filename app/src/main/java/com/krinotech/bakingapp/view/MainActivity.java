@@ -1,7 +1,9 @@
 package com.krinotech.bakingapp.view;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.test.espresso.IdlingResource;
 
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
     private View divider;
     private FrameLayout secondPane;
     private FrameLayout firstPane;
+
+    private IdlingResource idlingResource;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +121,15 @@ public class MainActivity extends AppCompatActivity {
 
     public View getDivider() {
         return divider;
+    }
+
+    @VisibleForTesting
+    public IdlingResource getIdlingResource() {
+        return idlingResource;
+    }
+
+    public void setIdlingResource(IdlingResource resource) {
+        this.idlingResource = resource;
     }
 }
 
