@@ -1,5 +1,7 @@
 package com.krinotech.bakingapp;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.test.espresso.IdlingResource;
 
@@ -8,7 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class RecipesIdlingResource implements IdlingResource {
     @Nullable private volatile ResourceCallback resourceCallback;
 
-    private AtomicBoolean isIdleNow = new AtomicBoolean(false);
+    private AtomicBoolean isIdleNow = new AtomicBoolean(true);
 
     @Override
     public String getName() {
@@ -29,6 +31,8 @@ public class RecipesIdlingResource implements IdlingResource {
         isIdleNow.set(b);
 
         if (b && resourceCallback != null) {
+            Log.d("RecuoeUdkubgResource", "setIdleState: " + b);
+
             resourceCallback.onTransitionToIdle();
         }
     }

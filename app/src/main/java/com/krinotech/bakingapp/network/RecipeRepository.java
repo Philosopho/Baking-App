@@ -85,16 +85,14 @@ public class RecipeRepository {
 
         LiveData<List<Recipe>> recipes = recipeDao.loadRecipes();
 
-        setIdlingResource(true);
-
         return recipes;
     }
 
     public LiveData<RecipeDetails> getRecipeDetails(int id) {
         refreshRecipes();
 
+        setIdlingResource(false);
         LiveData<RecipeDetails> recipeDetails = recipeDao.loadRecipeDetails(id);
-
         setIdlingResource(true);
 
         return recipeDetails;
@@ -102,8 +100,9 @@ public class RecipeRepository {
 
     private void refreshRecipes() {
         setIdlingResource(false);
-       executor.diskIO().execute(() -> {
-            boolean shouldFetchNewRecipes = preferences.shouldFetchNewRecipes();
+
+        executor.diskIO().execute(() -> {
+           boolean shouldFetchNewRecipes = preferences.shouldFetchNewRecipes();
 
             if(shouldFetchNewRecipes) {
                 Log.d(TAG, "refreshRecipes");
@@ -138,10 +137,12 @@ public class RecipeRepository {
                     e.printStackTrace();
                 }
             }
+            setIdlingResource(true);
         });
     }
 
     private void setIdlingResource(boolean b) {
+        Log.d(TAG, "setIdlingResource: " + b);
         if(idlingResource != null) {
             idlingResource.setIdleState(b);
         }

@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.IdlingResource;
+import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
@@ -17,6 +18,7 @@ import com.krinotech.bakingapp.util.InjectorUtils;
 import com.krinotech.bakingapp.view.MainActivity;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -29,10 +31,13 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.anything;
 import static org.junit.Assert.*;
 
 /**
@@ -42,6 +47,11 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
+    private static final String NUTELLA_PIE = "Nutella Pie";
+    private static final String BROWNIES = "Brownies";
+    private static final String YELLOW_CAKE = "Yellow Cake";
+    private static final String CHEESECAKE = "Cheesecake";
+
     @Rule
     public ActivityTestRule<MainActivity> testRule = new ActivityTestRule<>(MainActivity.class, false, true);
 
@@ -56,8 +66,24 @@ public class ExampleInstrumentedTest {
 
 
     @Test
-    public void nutellaPie() {
-        onView(withText("Nutella Pie")).check(matches(isDisplayed()));
+    public void nutellaPie_isDisplayed() {
+        onView(withText(NUTELLA_PIE)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void brownies_isDisplayed() {
+        onView(withText(BROWNIES)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void yellowCake_isDisplayed() {
+        onView(withText(YELLOW_CAKE)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void cheeseCake_isDisplayed() {
+        onView(withId(R.id.rv_recipe)).perform(RecyclerViewActions.scrollToPosition(3));
+        onView(withText(CHEESECAKE)).check(matches(isDisplayed()));
     }
 
     @After
