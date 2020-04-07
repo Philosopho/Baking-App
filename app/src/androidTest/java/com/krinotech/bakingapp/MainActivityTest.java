@@ -252,9 +252,17 @@ public class MainActivityTest {
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
 
-        onView(withId(R.id.btn_previous_step)).check(matches(isCompletelyDisplayed()));
-        onView(withId(R.id.btn_next_step)).check(matches(isDisplayed()));
-        onView(withId(R.id.tv_step_details)).check(matches(isDisplayed()));
-        onView(withId(R.id.videoView_details)).check(matches(isDisplayed()));
+        if(testRule.getActivity().isTablet()) {
+            onView(withId(R.id.btn_previous_step)).check(matches(isCompletelyDisplayed()));
+            onView(withId(R.id.btn_next_step)).check(matches(isDisplayed()));
+            onView(withId(R.id.tv_step_details)).check(matches(isDisplayed()));
+            onView(withId(R.id.videoView_details)).check(matches(isDisplayed()));
+        }
+        else {
+            onView(withId(R.id.btn_next_step)).check(matches(isDisplayed()));
+            onView(withId(R.id.btn_previous_step)).check(matches(isDisplayed()));
+            onView(withId(R.id.tv_step_details)).check(matches(isDisplayed()));
+            onView(withId(R.id.videoView_details)).check(matches(isDisplayed()));
+        }
     }
 }

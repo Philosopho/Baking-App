@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.test.espresso.IdlingResource;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding activityMainBinding;
     private FragmentManager fragmentManager;
     private boolean isTablet;
+    private boolean fromIngredientsWidget;
     private IdlingResource idlingResource;
 
 
@@ -42,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
             hideSecondPane();
         }
 
+        Intent intent = getIntent();
+
+        if(intent != null) {
+            fromIngredientsWidget = intent.getBooleanExtra(getString(R.string.INGREDIENTS_WIDGET_EXTRA), false);
+        }
+        else {
+            fromIngredientsWidget = false;
+        }
         setTitle(getString(R.string.main_activity_title));
 
         RecipesFragment recipesFragment = new RecipesFragment();
@@ -56,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager().addOnBackStackChangedListener(() -> {
             int stackHeight = getSupportFragmentManager().getBackStackEntryCount();
-            if (stackHeight > 1) { // if we have something on the stack (doesn't include the current shown fragment)
+            if (stackHeight > 1 && !isFromIngredientsWidget()) { // if we have something on the stack (doesn't include the current shown fragment)
                 getSupportActionBar().setHomeButtonEnabled(true);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             } else {
@@ -128,6 +138,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void setIdlingResource(IdlingResource resource) {
         this.idlingResource = resource;
+    }
+
+    public boolean isFromIngredientsWidget() {
+        return fromIngredientsWidget;
     }
 }
 

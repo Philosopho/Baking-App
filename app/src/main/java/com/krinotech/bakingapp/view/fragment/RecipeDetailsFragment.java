@@ -1,6 +1,10 @@
 package com.krinotech.bakingapp.view.fragment;
 
+import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,7 +19,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RemoteViews;
 
+import com.krinotech.bakingapp.IngredientsWidget;
+import com.krinotech.bakingapp.Preferences;
 import com.krinotech.bakingapp.R;
 import com.krinotech.bakingapp.databinding.FragmentRecipeBinding;
 import com.krinotech.bakingapp.databinding.FragmentRecipeDetailsBinding;
@@ -24,6 +31,8 @@ import com.krinotech.bakingapp.model.RecipeDetails;
 import com.krinotech.bakingapp.model.Step;
 import com.krinotech.bakingapp.recyclerview.DetailsAdapter;
 import com.krinotech.bakingapp.util.InjectorUtils;
+import com.krinotech.bakingapp.util.StringUtil;
+import com.krinotech.bakingapp.view.IngredientsWidgetActivity;
 import com.krinotech.bakingapp.view.MainActivity;
 import com.krinotech.bakingapp.viewmodel.DetailsViewModel;
 import com.krinotech.bakingapp.viewmodel.DetailsViewModelFactory;
@@ -35,6 +44,9 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 public class RecipeDetailsFragment extends BaseFragment implements DetailsAdapter.OnClickRecipeDetails {
     public static final String TAG = RecipeDetailsFragment.class.getSimpleName();
     public static final String RECIPE_NAME = "recipe name";
+
+    private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private Preferences preferences;
 
     private DetailsAdapter detailsAdapter;
 
@@ -58,18 +70,46 @@ public class RecipeDetailsFragment extends BaseFragment implements DetailsAdapte
             recipeId = savedInstanceState.getInt(getString(R.string.RECIPE_ID_EXTRA));
         }
 
-
-        initRecyclerView(fragmentRecipeBinding.getRoot().getContext());
+        if(!getHostActivity().isFromIngredientsWidget()) {
+            initRecyclerView(fragmentRecipeBinding.getRoot().getContext());
+        }
 
         DetailsViewModelFactory detailsViewModelFactory = InjectorUtils.provideDetailsViewModelFactory(getContext(), recipeId);
 
         DetailsViewModel detailsViewModel = ViewModelProviders.of(this, detailsViewModelFactory).get(DetailsViewModel.class);
         detailsViewModel.getRecipeDetails().observe(this, recipeDetails -> {
-            getActivity().setTitle(recipeDetails.recipe.getName());
-            detailsAdapter.setSteps(recipeDetails);
+                updateAppWidget(
+                        StringUtil.buildIngredient(recipeDetails.ingredients),
+                        recipeDetails.recipe.getName()
+                );
+                if(!getHostActivity().isFromIngredientsWidget()) {
+                    getActivity().setTitle(recipeDetails.recipe.getName());
+                    detailsAdapter.setSteps(recipeDetails);
+                }
         });
 
         return fragmentRecipeBinding.getRoot();
+    }
+
+    private void updateAppWidget(String ingredients, String recipeName) {
+        Intent intent = new Intent(getContext(), IngredientsWidgetActivity.class);
+        intent.putExtra(getString(R.string.RECIPE_NAME_EXTRA), recipeName);
+        intent.putExtra(getString(R.string.INGREDIENTS_EXTRA), ingredients);
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getActivity().getApplicationContext());
+        ComponentName componentName = new ComponentName(getHostActivity(), IngredientsWidget.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
+
+        RemoteViews remoteViews = new RemoteViews(getActivity().getPackageName(), R.layout.ingredients_widget);
+        String recipeIngredients = recipeName + "\n" + ingredients;
+        remoteViews.setOnClickPendingIntent(R.layout.activity_ingredients_widget, pendingIntent);
+        remoteViews.setTextViewText(R.id.appwidget_text, recipeIngredients);
+
+        appWidgetManager.updateAppWidget(appWidgetManager.getAppWidgetIds(componentName), remoteViews);
+        if(getHostActivity().isFromIngredientsWidget()) {
+            getHostActivity().finish();
+        }
     }
 
     @Override
