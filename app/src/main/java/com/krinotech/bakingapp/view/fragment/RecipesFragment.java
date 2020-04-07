@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -23,6 +24,7 @@ import android.widget.ProgressBar;
 import com.krinotech.bakingapp.BuildConfig;
 import com.krinotech.bakingapp.R;
 import com.krinotech.bakingapp.RecipesIdlingResource;
+import com.krinotech.bakingapp.databinding.FragmentRecipeBinding;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
 import com.krinotech.bakingapp.model.Recipe;
 import com.krinotech.bakingapp.recyclerview.RecipeAdapter;
@@ -37,9 +39,8 @@ import com.krinotech.bakingapp.viewmodel.MainViewModelFactory;
 public class RecipesFragment extends BaseFragment implements RecipeAdapter.OnItemClickListener {
     public static final String TAG = RecipesFragment.class.getSimpleName();
 
-    private RecyclerView recyclerView;
+    private FragmentRecipeBinding fragmentRecipeBinding;
     private RecipeAdapter recipeAdapter;
-    private ProgressBar progressBar;
 
     public RecipesFragment() {
         // Required empty public constructor
@@ -55,11 +56,7 @@ public class RecipesFragment extends BaseFragment implements RecipeAdapter.OnIte
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.fragment_recipe, container, false);
-
-        progressBar = rootView.findViewById(R.id.pb_circular);
-
-        recyclerView = rootView.findViewById(R.id.rv_recipe);
+        fragmentRecipeBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_recipe, container, false);
 
         initRecyclerView(getActivity());
 
@@ -77,7 +74,7 @@ public class RecipesFragment extends BaseFragment implements RecipeAdapter.OnIte
 
         new LifecycleObserverComponent(TAG).registerLifeCycle(getLifecycle());
 
-        return rootView;
+        return fragmentRecipeBinding.getRoot();
     }
 
     private MainViewModelFactory getMainViewModelFactory() {
@@ -106,9 +103,9 @@ public class RecipesFragment extends BaseFragment implements RecipeAdapter.OnIte
                     context, RecyclerView.VERTICAL, false);
         }
 
-        recyclerView.setLayoutManager(linearLayoutManager);
+        fragmentRecipeBinding.rvRecipe.setLayoutManager(linearLayoutManager);
 
-        recyclerView.setAdapter(recipeAdapter);
+        fragmentRecipeBinding.rvRecipe.setAdapter(recipeAdapter);
 
     }
 
@@ -125,11 +122,17 @@ public class RecipesFragment extends BaseFragment implements RecipeAdapter.OnIte
     }
 
     private void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
+        fragmentRecipeBinding
+                .includedLayout
+                .pbCircular
+                .setVisibility(View.VISIBLE);
     }
 
     private void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
+        fragmentRecipeBinding
+                .includedLayout
+                .pbCircular
+                .setVisibility(View.GONE);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.krinotech.bakingapp.view;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.test.espresso.IdlingResource;
 
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.krinotech.bakingapp.R;
+import com.krinotech.bakingapp.databinding.ActivityMainBinding;
 import com.krinotech.bakingapp.view.fragment.RecipesFragment;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
 
@@ -18,12 +20,10 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private ActivityMainBinding activityMainBinding;
     private FragmentManager fragmentManager;
     private boolean isTablet;
-    private View divider;
-    private FrameLayout secondPane;
-    private FrameLayout firstPane;
-
     private IdlingResource idlingResource;
 
 
@@ -35,12 +35,10 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
 
         isTablet = getResources().getBoolean(R.bool.isTablet);
-        setContentView(R.layout.activity_main);
+
+        activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         if(isTablet) {
-            divider = findViewById(R.id.v_divider);
-            secondPane = findViewById(R.id.fl_details_container);
-            firstPane = findViewById(R.id.fl_recipes_container);
             hideSecondPane();
         }
 
@@ -97,11 +95,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void hideSecondPane() {
         if(isTablet) {
-            ViewGroup.LayoutParams layoutParams = firstPane.getLayoutParams();
+            ViewGroup.LayoutParams layoutParams = activityMainBinding.flRecipesContainer.getLayoutParams();
             layoutParams.width = MATCH_PARENT;
-            firstPane.setLayoutParams(layoutParams);
-            secondPane.setVisibility(View.GONE);
-            divider.setVisibility(View.GONE);
+            activityMainBinding.flRecipesContainer.setLayoutParams(layoutParams);
+            activityMainBinding.flDetailsContainer.setVisibility(View.GONE);
+            activityMainBinding.vDivider.setVisibility(View.GONE);
         }
     }
 
@@ -114,13 +112,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public FrameLayout getSecondPane() {
-        return secondPane;
+        return activityMainBinding.flDetailsContainer;
     }
 
-    public FrameLayout getFirstPane() { return firstPane; }
+    public FrameLayout getFirstPane() { return activityMainBinding.flRecipesContainer; }
 
     public View getDivider() {
-        return divider;
+        return activityMainBinding.vDivider;
     }
 
     @VisibleForTesting

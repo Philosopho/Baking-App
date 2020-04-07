@@ -38,6 +38,7 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -216,7 +217,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void tapRecipe_tapFirstStep_onLandscape_shouldHideText_Buttons() {
+    public void tapRecipe_tapThirdStep_onLandscape_shouldHideText_Buttons() {
         onView(withText(NUTELLA_PIE)).perform(click());
         onView(withId(R.id.rv_recipe_details)).perform(RecyclerViewActions.actionOnItemAtPosition(3, click()));
 
@@ -224,14 +225,22 @@ public class MainActivityTest {
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
 
-        onView(withId(R.id.btn_previous_step)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.btn_next_step)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.tv_step_details)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.videoView_details)).check(matches(isDisplayed()));
+        if(testRule.getActivity().isTablet()) {
+            onView(withId(R.id.btn_previous_step)).check(matches(isCompletelyDisplayed()));
+            onView(withId(R.id.btn_next_step)).check(matches(isDisplayed()));
+            onView(withId(R.id.tv_step_details)).check(matches(isDisplayed()));
+            onView(withId(R.id.videoView_details)).check(matches(isDisplayed()));
+        }
+        else {
+            onView(withId(R.id.btn_previous_step)).check(matches(not(isDisplayed())));
+            onView(withId(R.id.btn_next_step)).check(matches(not(isDisplayed())));
+            onView(withId(R.id.tv_step_details)).check(matches(not(isDisplayed())));
+            onView(withId(R.id.videoView_details)).check(matches(isDisplayed()));
+        }
     }
 
     @Test
-    public void tapRecipe_tapFirstStep_onLandscape_toPortrait_shouldSeeText_Buttons() {
+    public void tapRecipe_tapThirdStep_onLandscape_toPortrait_shouldSeeText_Buttons() {
         onView(withText(NUTELLA_PIE)).perform(click());
         onView(withId(R.id.rv_recipe_details)).perform(RecyclerViewActions.actionOnItemAtPosition(3, click()));
 
@@ -243,7 +252,7 @@ public class MainActivityTest {
 
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
 
-        onView(withId(R.id.btn_previous_step)).check(matches(isDisplayed()));
+        onView(withId(R.id.btn_previous_step)).check(matches(isCompletelyDisplayed()));
         onView(withId(R.id.btn_next_step)).check(matches(isDisplayed()));
         onView(withId(R.id.tv_step_details)).check(matches(isDisplayed()));
         onView(withId(R.id.videoView_details)).check(matches(isDisplayed()));

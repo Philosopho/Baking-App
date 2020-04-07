@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.krinotech.bakingapp.R;
+import com.krinotech.bakingapp.databinding.FragmentRecipeBinding;
+import com.krinotech.bakingapp.databinding.FragmentRecipeDetailsBinding;
 import com.krinotech.bakingapp.lifecycle.LifecycleObserverComponent;
 import com.krinotech.bakingapp.model.RecipeDetails;
 import com.krinotech.bakingapp.model.Step;
@@ -35,7 +38,7 @@ public class RecipeDetailsFragment extends BaseFragment implements DetailsAdapte
 
     private DetailsAdapter detailsAdapter;
 
-    private RecyclerView recyclerView;
+    private FragmentRecipeDetailsBinding fragmentRecipeBinding;
     private int recipeIdSaved;
     public RecipeDetailsFragment() {
         // Required empty public constructor
@@ -46,7 +49,7 @@ public class RecipeDetailsFragment extends BaseFragment implements DetailsAdapte
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        final View rootView = inflater.inflate(R.layout.fragment_recipe_details, container, false);
+        fragmentRecipeBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_recipe_details, container, false);
 
         int recipeId = getArguments().getInt(getString(R.string.RECIPE_ID_EXTRA), -1);
         recipeIdSaved = recipeId;
@@ -54,9 +57,9 @@ public class RecipeDetailsFragment extends BaseFragment implements DetailsAdapte
             Log.d(TAG, "onCreateView: " + recipeId);
             recipeId = savedInstanceState.getInt(getString(R.string.RECIPE_ID_EXTRA));
         }
-        recyclerView = rootView.findViewById(R.id.rv_recipe_details);
 
-        initRecyclerView(rootView.getContext());
+
+        initRecyclerView(fragmentRecipeBinding.getRoot().getContext());
 
         DetailsViewModelFactory detailsViewModelFactory = InjectorUtils.provideDetailsViewModelFactory(getContext(), recipeId);
 
@@ -66,7 +69,7 @@ public class RecipeDetailsFragment extends BaseFragment implements DetailsAdapte
             detailsAdapter.setSteps(recipeDetails);
         });
 
-        return rootView;
+        return fragmentRecipeBinding.getRoot();
     }
 
     @Override
@@ -88,9 +91,9 @@ public class RecipeDetailsFragment extends BaseFragment implements DetailsAdapte
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 context, RecyclerView.VERTICAL, false);
 
-        recyclerView.setLayoutManager(linearLayoutManager);
+        fragmentRecipeBinding.rvRecipeDetails.setLayoutManager(linearLayoutManager);
 
-        recyclerView.setAdapter(detailsAdapter);
+        fragmentRecipeBinding.rvRecipeDetails.setAdapter(detailsAdapter);
 
     }
 
