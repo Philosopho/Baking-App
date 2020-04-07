@@ -34,9 +34,9 @@ public class RecipeDetailsFragment extends BaseFragment implements DetailsAdapte
     public static final String RECIPE_NAME = "recipe name";
 
     private DetailsAdapter detailsAdapter;
+
     private RecyclerView recyclerView;
     private int recipeIdSaved;
-
     public RecipeDetailsFragment() {
         // Required empty public constructor
     }
@@ -140,5 +140,9 @@ public class RecipeDetailsFragment extends BaseFragment implements DetailsAdapte
         mainActivity.getFirstPane().setLayoutParams(layoutParams);
         mainActivity.getSecondPane().setVisibility(View.VISIBLE);
         mainActivity.getDivider().setVisibility(View.VISIBLE);
+    }
+
+    public DetailsAdapter getDetailsAdapter() {
+        return detailsAdapter;
     }
 }
